@@ -1,0 +1,339 @@
+How to use 'Mave' textbase mailer.
+
+Requirement
+
+  Ruby, curses and qdbm/gdbm library.
+
+1. Get archive and Extract
+
+  Access http://sourceforge.jp/projects/mave/downloads/xxxxx/mave-2.98.tgz/
+  $ tar xvfz mave-2.98.tgz
+  $ cd mave-2.98
+
+2. Build your config
+
+  $ cp mave.config.sample mave.config
+  $ vi mave.config
+
+    rewrite setting of 'Main' account to yours.
+    You can jump to paragraph 3, if you try mave immediately.
+
+    configure your editor environment.
+
+    @configs[:EDITOR_TYPE] = ['system'|'forkexec']
+        system: Mave close curses window and wake editor with same console. For CUI.
+      forkexec: Mave fork child process and wake editor another window. For GUI.
+
+    @configs[:EDITOR] = '/usr/bin/editor %s'
+      The command of wake editor. %s is replaced to file name.
+
+    configure your viewer environment.
+
+    @configs[:VIEWER_TYPE] = ['system'|'forkexec']
+    @configs[:VIEWER] = '/usr/bin/viewer %s'
+      These settings are similar to editor's.
+
+    configure your file management environment.
+
+    @configs[:FILE_MANAGER_TYPE] = ['system'|'forkexec']
+    @configs[:FILE_MANAGER] = '/usr/bin/nautilus %s >/dev/null 2>&1'
+      These settings are used for open directory by file manager for manipulate files.
+
+    configure file identification command.
+
+    @configs[:FILE_IDENTIFIER] = '/usr/bin/file -b -i %s 2>/dev/null'
+      These settings are used for identify file types when attach file to mail and etc.
+
+3. Make directory for store mail files
+
+  $ mkdir ~/mave.mails
+
+  Mave do not create any files without the directory specified here.
+
+  To send mail, you should build the address book this phase.
+  See the paragraph of "15. Build your addressbook" if you want.
+
+4. Execute Mave
+
+  $ ./mave
+
+  If screen is garbled, see the paragraph of "Note:".
+
+5. Fetch mails
+
+  Press Ctrl + x, p key to fetch mails from server.
+
+  In default, Mave does not remove mails on pop server immediately.
+  The time lag until removing mails was set by ':POP_KEEP_TIME'.
+  It is possible to try use Mave in parallel with your current mailer.
+
+  Status window is scrolled by Pgup, PgDn keys.
+
+6. Explore mails
+
+  Each h, j, k, and l key were allocated in each Left, Down, Up, and Right like the Vi editor.
+
+  How to look summary line.
+
+  x.  22 Amazon.com   <sh Sun, 22 Nov 15:40  579 .. +Amazon.com order confirmation
+  ^^ ^^^ ^^^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^^^^ ^^^^ ^^ ^ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ||  |   Mail from / to   Sent date        size || |  Subject
+  ||  +-Recent 0 <=> 999 Old                     || +-Parent(+) / Child(-) / Folded(#/=)
+  |+-Flag(F) / Notice mark(#)                    |+-Multipart mail(@)(Has attachment)
+  +-Unread mark(x)                               +-To you(w) / Cc you(v)
+
+  You can change summary looking.
+
+  r key: Unread mark ON/OFF           f key: Flag ON/OFF
+  o key: Fold thread / Open           n key: Notice mark ON/OFF
+
+  Press Ctrl + x, v key to open mail viewer.
+
+7. Incremental search
+
+  Press Ctrl + s key to open incremental search dialog at summary or preview view.
+  The search will running that each key was pressed.
+  Press Ctrl + s key to search next when word found.
+  Press Ctrl + g key to abort search or close search dialog.
+  Press Ctrl + r key to search backward.
+
+  You can incremental search with romanized japanese key stroke at summary view,
+  by installing the kanji kana simple inverter KAKASI and its ruby bindings.
+  This function is build by convert to romanized japanese and its caching.
+  Press ESC, Shift + q key to see the cache data.
+
+8. Create/Edit mail message
+
+  Press Ctrl + x, n key to create new mail message.
+  Press Ctrl + x, r key to create reply mail message.
+  The message will store to 'Drafts' folder.
+
+  Press Ctrl + x, e key to edit mail message.
+  The message will overwrite.
+
+  At the headers of destination (To:, Cc:, Bcc:), you can specify the receiver by entries on address book.
+  The word enclosed with two hyphens is recognized as ID that defined in the address book, and converted as follows.
+
+  Example of definition)
+    entries << { :MAIL => 'david-x@google.com',                     :ID => 'david',                                 }
+    entries << { :MAIL => 'john-y@yahoo.co.jp',                     :ID => 'john@private',  :SEND => 'johnny',      }
+
+  At Edit)                     At Send)
+    To: --david--,          =>   To: david <david-x@google.com>, johnny <john-y@yahoo.co.jp>
+        --john@private--
+
+9. Mail Folders
+
+  Press h key on the summary view, change into the folder view.
+  In folder view, select folder with up/down(k, j), and move into the folder with right(l).
+  Or press shortcut key to move into the folder.
+
+  How to look folder list.
+
+  x 0) Inbox (5/52)
+  . a) Community (2/38)
+  x b) Develop (1/8)
+  . d) Drafts (0/23)
+  . o) Outbox (0/0)
+  . s) Sent (0/25)
+  . t) Trash (0/18)
+  ^ ^  ^^^^^  ^^^^
+  | |    |    Number of unread / all mails
+  | |    +-Folder name
+  | +-Shortcut key
+  +-Folder got new mails mark(x)
+
+  Press r key to ON/OFF got new mails mark.
+  In folder view, press Ctrl + x, n key to create new folder.
+  In selecting folder, press Ctrl + x, e key to edit folder configurations.
+  You can change display name, list order and mail distributing by edit folder configurations.
+  See example in 'mave.folderconfig.master'.
+
+10. Move, Copy and Delete mails.
+
+  In summary view, press Ctrl + x, m key to move mail to another folder.
+  The folder view opens, and select the destination folder.
+
+  Press Ctrl + x, c key to copy mail to another folder.
+
+  Press Ctrl + x, d key to delete mail.
+  The mail deleted from except 'Trash' folder, it moves to the 'Trash' folder.
+  The mail deleted from 'Trash' folder, it deleted completely.
+
+11. Send mails
+
+  Press Ctrl + x, s key to send mails in 'Outbox' folder.
+
+  Usually, the edited E-mail is stored in 'Draft' folder,
+  and moves to 'Outbox' folder to send when mail is finished writing.
+
+  Sent mails are moved to 'Sent' folder.
+
+12. Import mails
+
+  Press Ctrl + x, Shift + i key to import mails according to the setting of each account.
+
+  Import mails are shown by the command that lists the import file with a standard output.
+
+  Example)
+    account[:IMPORT_COMMAND] = %Q!/usr/bin/find /home/old_user/mave.mails -name '*.eml' |
+                                  grep -E '/Inbox/' | sed 's/\\/.*\\//& /'| sort -k 2 | sed 's/ //'!
+
+  Or, it describes to the text file, and execute cat command for it.
+  There should be import mails in the format of one mail by one file.
+  Now, Mave doesn't correspond to the mbox format and other.
+
+  The default config has the setting that import manual of Mave that formatted like mail.
+  Press Ctrl + x, Shift + i key to import its when just start Mave.
+
+13. Mark mails
+
+  In summary view, press m key to mark mail.
+  The marked mails are indicated with 'M'.
+
+  - x.  22 Amazon.com   <sh Sun, 22 Nov 15:40  579 .. +Amazon.com order confirmation
+  M x.  22 Amazon.com   <sh Mon, 23 Nov 15:41  612 ..   -Amazon.com shipping information (#123-1423534-1048639)
+  ^ "M" mark
+
+  Press u key to unmark mail.
+  Press ESC, u key to unmark all mails.
+
+  Most functions act on marked mails while marking mails.
+
+14. Arrange mail threads
+
+  In summary view, Press Ctrl + x, Shift + j key to take off mail from thread.
+
+  Press ESC, j key to tie mail to original thread.
+
+  Press Ctrl + x, j key to tie mail to mail thread that you want to.
+  The mail that marked will tie to the mail that indicated with cursor, when press Ctrl + x, j key.
+
+15. Build your addressbook
+
+  $ cp mave_address.sample mave_address
+  $ vi mave_address
+
+  Fill forms with family's, friend's and your mail address, according to the sample.
+
+  Example)
+    entries << { :MAIL => 'david-x@google.com',                     :ID => 'david',                                 }
+    entries << { :MAIL => 'john-y@yahoo.co.jp',                     :ID => 'john@private',  :SEND => 'johnny',      }
+    entries << { :MAIL => 'linus-z@abc.co.jp',                      :ID => 'linus@ABC',     :SEND => 'Mr. Zorvalds',}
+
+  Entries were registered to the address book DB by the execute script of address book.
+
+  $ ./mave_address
+
+16. Attach file to mail
+
+  To viewing attachment files in received mail.
+
+    In summary view, Press Ctrl + x, x key to extract all attachment files in mail to related directory.
+    The related directory is paired for each mail, that holds some files.
+    In summary view, Press ESC, f key to open related directory by file manager.
+
+  To replying mail with attachment files that had some modify.
+
+    In summary view, Press Ctrl + x, r key to create reply mail that has X-Mave-Extract-Targets header for file extract.
+    After edit and save mail, attachment files are extract to related directory described under X-Mave-Extract-Targets header.
+    Press ESC, f key for reply mail to open related directory by file manager and modify it.
+    Press Ctrl + x, e key to edit mail. Extracted files are described under X-Mave-Relations header.
+    You can move file description to under X-Mave-Attachments header from under X-Mave-Relations header, if you want to attach and reply.
+    Move mail to 'Outbox' folder and press Ctrl + x, s key to send mail with attachment files.
+
+  To send new mail with new attachment files.
+
+    In summary view, Press Ctrl + x, n key to create new mail that has empty X-Mave-Relations header.
+    Describe filenames that you will attach under X-Mave-Relations header, empty files that have same filenames will create in related directory.
+    Press ESC, f key for new mail to open related directory by file manager and modify it.
+    You can send mail with attachment files by move file description to under X-Mave-Attachments header from under X-Mave-Relations header.
+
+17. Clip(quote) and Tagjump
+
+  Clip(quote) function is a function that quotes a part of mail, and pastes it on another mail.
+  The quotes has a message-id(tag) in mail. It is possible to jump(tagjump) to original mail.
+  If these functions are used, the schedule management can be done on mailer, and the full-text search capability described later be achieved.
+
+  In preview view, the "]" mark where the several lines from top in the left is a cursor. It can used for the clip from mail.
+  Target cursor to the line that wants to begin quoting, and press Ctrl + c to clip line to clip file.
+  The cursor moves to the next line after quoting, you can press more Ctrl + c to clip multi lines continuously.
+
+  In default, the clip file will create with mave.clip file under _pop under the mail directory.
+  You can paste this file, by using the file insertion function on the ediror.
+
+  The quote lines are the following forms.
+
+      * [MEETING] Mailer Mave 2.97 last review
+        <1268959354.007885.8ed5d181@mave.zakato.itline.jp> line:18
+      - Thursday, April 1, at 1:15 p.m to 3:00 p.m
+      - Meeting room 503
+
+  Target cursor to message-id tag on second line of quotes, and press Crtl + ] to jump to original mail.
+  The position that before the tag jump is store to the tagstack, you can return immediately former positon by press Ctrl + t.
+
+18. Full-text search
+
+  You can the full-text search of the content of mail each folder, by installing the full-text search engine.
+  The full-text search function is build by combining shell command execution, import result and tagjump functions.
+  The interface for Hyper Estraier and Namazu is prepared as a scripting example.
+  See the fulltext_search method in mave.folderconfig.common for the example of scripting the interface.
+
+  Move to the target folder that wants to do the full-text search, and press ESC, s at summary or preview view to open the full-text search dialog.
+  Input word or phrased for search and press Enter to execute search and result is stored to the folder as a mail format.
+  You can jump to original mail by using the tagjump function on the search result.
+
+19. Execute shell command and import result
+
+  You can execute shell command that described in in mail, and result is stored to the folder as a mail format.
+
+  Target cursor to line that has shell command, and press ESC, ! to execute it.
+  If the execution result pseudotakes the form of mail, the mail header information is effect.
+  Subject and Message-ID of the taken mail can be controlled by using this.
+  And the store folder can be specified by using X-Mave-Store-Folder pseudoheader.
+  See imported mail (Subject: example of the script launcher) for the example of scripting the interface.
+
+20. Prevent to forget to attach to mail. Pre-sent and post-send script.
+
+  You can execute the script when just before and after send mail.
+  This function used for prevent to forgot to attach to mail by word checking in mail body when just before send mail.
+  See the presend method in mave.folderconfig.common for the example of scripting.
+
+21. Quit
+
+  Press Ctrl + x, c key to kill mave.
+
+22. Web mail viewer 'Maverick'
+  
+  The 'Maverick' is cgi script of mail viewer for mail reading with web browser.
+  Mail data and index of full-text search are completely shared with mave.
+  To use, install Apache and eRuby, move mave directory under public_html.
+  Don't forget to set access permittion properly refer dot.htaccess.
+  You can use like Gmail by cyclic execute mave_fetch script that attached.
+
+Enjoy!!
+
+Note:
+  When multibyte character is troubled.
+  Standard curses library of Ruby doesn't correspond to UTF-8.
+  Please apply the patch to correspond to ncursesw referring to the following sites.
+
+  http://www.itline.jp/~svx/diary/?date=20091022
+
+  In experimentally, Mave corresponds terminal environment of EUC-JP now.
+  In this case, you do not need to apply above patch.
+  Set EUC-JP to ':TERMINAL_CHARSET' in mave.config, and change mave_base.rb a bit.
+  "export LANG=ja_JP.eucjp" might execute from the terminal.
+
+  117     def enspc
+  118 #       return(self)                                            # comment out without UTF-8
+  119 ^       self.gsub(/[\xC0-\xE2][\x80-\xBF]+/) {|c|               #### for UTF8 temporally
+      +-remove this '#'
+
+  And in experimentally, Mave is corresponding Windows console environment with SHIFT_JIS.
+  Set SHIFT_JIS to ':TERMINAL_CHARSET' in mave.config, and try and error.
+
+Mave project official page:
+  http://sourceforge.jp/projects/mave/
+
+[EOF]

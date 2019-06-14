@@ -1,0 +1,23 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?NS4gRmV0Y2ggbWFpbHM=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.468648.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Press Ctrl + x, p key to fetch mails from server.
+
+  In default, Mave does not remove mails on pop server immediately.
+  The time lag until removing mails was set by ':POP_KEEP_TIME'.
+  It is possible to try use Mave in parallel with your current mailer.
+
+  Status window is scrolled by Pgup, PgDn keys.

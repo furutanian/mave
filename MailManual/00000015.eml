@@ -1,0 +1,27 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTMuIE1hcmsgbWFpbHM=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.478622.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  In summary view, press m key to mark mail.
+  The marked mails are indicated with 'M'.
+
+  - x.  22 Amazon.com   <sh Sun, 22 Nov 15:40  579 .. +Amazon.com order confirmation
+  M x.  22 Amazon.com   <sh Mon, 23 Nov 15:41  612 ..   -Amazon.com shipping information (#123-1423534-1048639)
+  ^ "M" mark
+
+  Press u key to unmark mail.
+  Press ESC, u key to unmark all mails.
+
+  Most functions act on marked mails while marking mails.

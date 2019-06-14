@@ -1,0 +1,285 @@
+# coding: utf-8
+
+#---------------------------------------------------------------
+#
+#	キー名定義
+#
+key = {}
+key['C-@'] = key['C-SPC'] = 0
+ctrl = 'C-a'; (1..26).each {|code|
+	key[ctrl] = code; ctrl.succ!
+}
+key['C-['] = key['ESC'] = 27
+key['C-\\'] = 28
+key['C-]'] = 29
+key['C-^'] = 30													# ctrl + shift + &
+key['C-_'] = key['C-/'] = key['C-='] = 31
+key['SPC'] = 32
+(33..126).each {|code|
+	key[code.chr] = code
+}
+key['DEL'] = 127
+
+#---------------------------------------------------------------
+#
+#	キー定義
+#
+@mave_keymaps = {}
+
+# グローバルキーマップ定義
+view = :GLOBAL; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = nil	# 親キーマップ
+
+keymap[									key['k']		] = :mk_global_previous
+keymap[									key['j']		] = :mk_global_next
+keymap[									key['h']		] = :mk_global_backward
+keymap[									key['l']		] = :mk_global_forward
+
+keymap[									key['C-p']		] = :mk_global_previous
+keymap[									key['C-n']		] = :mk_global_next
+keymap[									key['C-b']		] = :mk_global_backward
+keymap[									key['C-f']		] = :mk_global_forward
+
+keymap[									key['1']		] = :mk_global_1st_position
+keymap[									key['2']		] = :mk_global_2nd_position
+keymap[									key['3']		] = :mk_global_3rd_position
+keymap[									key['4']		] = :mk_global_4th_position
+keymap[									key['5']		] = :mk_global_5th_position
+keymap[									key['6']		] = :mk_global_6th_position
+keymap[									key['7']		] = :mk_global_7th_position
+keymap[									key['8']		] = :mk_global_8th_position
+keymap[									key['9']		] = :mk_global_9th_position
+
+keymap[									key['C-m']		] = :mk_global_execute
+keymap[									key['C-g']		] = :mk_global_quit
+
+keymap[			(key['ESC'] <<  8) +	key['C-p']		] = :mk_global_previous_account
+keymap[			(key['ESC'] <<  8) +	key['C-n']		] = :mk_global_next_account
+
+keymap[			(key['C-x'] <<  8) +	key['I']		] = :mk_global_import_mail
+keymap[			(key['C-x'] <<  8) +	key['p']		] = :mk_global_fetch_mail_pop
+keymap[			(key['C-x'] <<  8) +	key['s']		] = :mk_global_send_mail_smtp
+
+keymap[			(key['C-x'] <<  8) +	key['n']		] = :mk_global_new
+keymap[			(key['C-x'] <<  8) +	key['N']		] = :mk_global_renew
+keymap[			(key['C-x'] <<  8) +	key['r']		] = :mk_global_reply
+keymap[			(key['C-x'] <<  8) +	key['R']		] = :mk_global_reply_to_all
+keymap[			(key['C-x'] <<  8) +	key['f']		] = :mk_global_mforward
+keymap[			(key['C-x'] <<  8) +	key['F']		] = :mk_global_resend
+keymap[			(key['C-x'] <<  8) +	key['e']		] = :mk_global_edit
+keymap[			(key['C-x'] <<  8) +	key['v']		] = :mk_global_view
+keymap[			(key['C-x'] <<  8) +	key['V']		] = :mk_global_view_raw
+
+keymap[			(key['C-x'] <<  8) +	key['m']		] = :mk_global_move
+keymap[			(key['C-x'] <<  8) +	key['c']		] = :mk_global_copy
+keymap[			(key['C-x'] <<  8) +	key['d']		] = :mk_global_delete
+
+keymap[			(key['ESC'] <<  8) +	key['f']		] = :mk_global_call_file_manager
+keymap[			(key['ESC'] <<  8) +	key['l']		] = :mk_global_call_screen_lock
+
+#eymap[									key['q']		] = :mk_global_kill_mave
+keymap[			(key['C-x'] <<  8) +	key['C-c']		] = :mk_global_kill_mave
+
+keymap[			(key['ESC'] <<  8) +	key['K']		] = :mk_global_toggle_what_key
+keymap[			(key['ESC'] <<  8) +	key['Q']		] = :mk_global_toggle_what_scache
+keymap[			(key['ESC'] <<  8) +	key['C']		] = :mk_global_toggle_what_charset
+
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['3']		] = :mk_global_fetch_mail_pop		# DEL key
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['2']		] = :mk_global_send_mail_smtp		# INS key
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['5']		] = :mk_global_status_scroll_down	# PgUp key
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['6']		] = :mk_global_status_scroll_up		# PgDn key
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['A']		] = :mk_global_previous				# Cursor up   / Mouse wheel up
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['B']		] = :mk_global_next					# Cursor down / Mouse wheel down
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['D']		] = :mk_global_backward				# Cursor left
+keymap[			(key['ESC']	<< 16) +
+				(key['[']	<<  8) +	key['C']		] = :mk_global_forward				# Cursor right
+keymap[									key['~']		] = :mk_global_dummy
+
+keymap[			(key['ESC'] <<  8) +	key['P']		] = :mi_pickup_file					# 内部通信用
+keymap[			(key['ESC'] <<  8) +	key['C-f']		] = :mk_pickup_file_force
+
+prefix_keymap[							key['C-x']		] = :mk_global_Control_X_prefix
+prefix_keymap[							key['ESC']		] = :mk_global_ESC_prefix
+prefix_keymap[	(key['ESC'] <<  8) +	key['[']		] = :mk_global_ESC_SB_prefix
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# フォルダ一覧ビュー、キーマップ定義
+view = :FOLDERLIST; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :GLOBAL
+
+keymap[									key['r']		] = :mk_toggle_red
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# サマリビュー、キーマップ定義
+view = :SUMMARY; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :GLOBAL
+
+keymap[									key['C-z']		] = :mk_scroll_down
+keymap[									key['C-v']		] = :mk_scroll_up
+keymap[									key['C-u']		] = :mk_scroll_down
+keymap[									key['C-d']		] = :mk_scroll_up
+keymap[									key['SPC']		] = :mk_scroll_up
+
+keymap[									key['0']		] = :mk_beginning_of_summary
+keymap[									key['G']		] = :mk_end_of_summary
+
+keymap[			(key['ESC'] <<  8) +	key['<']		] = :mk_beginning_of_summary
+keymap[			(key['ESC'] <<  8) +	key['>']		] = :mk_end_of_summary
+
+keymap[									key['P']		] = :mk_jump_root
+
+keymap[									key['r']		] = :mk_toggle_red
+keymap[									key['f']		] = :mk_toggle_flag
+keymap[									key['n']		] = :mk_toggle_notice
+keymap[									key['o']		] = :mk_toggle_fold
+keymap[									key['O']		] = :mk_toggle_fold_root
+keymap[									key['C-o']		] = :mk_toggle_fold_all
+keymap[			(key['ESC'] <<  8) +	key['o']		] = :mk_restore_each_fold
+
+keymap[									key['C-s']		] = :mk_isearch_forward
+keymap[									key['C-r']		] = :mk_isearch_backward
+keymap[									key['/']		] = :mk_isearch_forward
+keymap[									key['?']		] = :mk_isearch_backward
+
+keymap[									key['m']		] = :mk_mark
+keymap[									key['u']		] = :mk_unmark
+keymap[			(key['ESC'] <<  8) +	key['u']		] = :mk_unmark_all
+
+keymap[			(key['C-x'] <<  8) +	key['j']		] = :mk_join
+keymap[			(key['C-x'] <<  8) +	key['J']		] = :mk_unjoin
+keymap[			(key['ESC'] <<  8) +	key['j']		] = :mk_rejoin
+
+keymap[			(key['C-x'] <<  8) +	key['E']		] = :mk_export_mail
+keymap[			(key['C-x'] <<  8) +	key['x']		] = :mk_extract_attachments
+keymap[			(key['C-x'] <<  8) +	key['a']		] = :mi_enclose_attachments			# 内部通信用
+
+keymap[									key['C-t']		] = :mk_pop_tag_mark
+keymap[			(key['ESC'] <<  8) +	key['s']		] = :mk_fulltext_search
+keymap[			(key['ESC'] <<  8) +	key['S']		] = :mk_fulltext_search_all
+
+keymap[			(key['C-x'] <<  8) +	key['i']		] = :mk_identify_mail
+
+keymap[			(key['C-w'] <<  8) +	key['n']		] = :mk_wiki_create_page
+keymap[			(key['C-w'] <<  8) +	key['p']		] = :mk_wiki_fetch_pages
+keymap[			(key['C-w'] <<  8) +	key['s']		] = :mk_wiki_send_page
+keymap[			(key['C-w'] <<  8) +	key['S']		] = :mk_wiki_send_pages_all
+
+prefix_keymap[							key['C-w']		] = :mk_wiki_Control_W_prefix
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# プレビュービュー、キーマップ定義
+view = :PREVIEW; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :GLOBAL
+
+keymap[									key['C-z']		] = :mk_scroll_down
+keymap[									key['C-v']		] = :mk_scroll_up
+keymap[									key['C-u']		] = :mk_scroll_down
+keymap[									key['C-d']		] = :mk_scroll_up
+keymap[									key['SPC']		] = :mk_scroll_up
+
+keymap[									key['0']		] = :mk_beginning_of_message
+keymap[									key['G']		] = :mk_end_of_message
+
+keymap[			(key['ESC'] <<  8) +	key['<']		] = :mk_beginning_of_message
+keymap[			(key['ESC'] <<  8) +	key['>']		] = :mk_end_of_message
+
+keymap[									key['r']		] = :mk_toggle_red
+keymap[									key['f']		] = :mk_toggle_flag
+keymap[									key['n']		] = :mk_toggle_notice
+
+keymap[									key['C-s']		] = :mk_isearch_forward
+keymap[									key['C-r']		] = :mk_isearch_backward
+keymap[									key['/']		] = :mk_isearch_forward
+keymap[									key['?']		] = :mk_isearch_backward
+
+#### 機能してない
+keymap[			(key['C-x'] <<  8) +	key['x']		] = :mk_extract_attachment
+
+keymap[									key['C-c']		] = :mk_clip
+keymap[			(key['ESC'] <<  8) +	key['C-c']		] = :mk_append_next_clip
+#eymap[									key['P']		] = :mk_yank
+#eymap[									key['C-y']		] = :mk_yank
+keymap[									key['C-]']		] = :mk_find_tag
+keymap[									key['C-t']		] = :mk_pop_tag_mark
+keymap[			(key['ESC'] <<  8) +	key['.']		] = :mk_find_tag
+keymap[			(key['ESC'] <<  8) +	key['*']		] = :mk_pop_tag_mark
+
+keymap[			(key['ESC'] <<  8) +	key['!']		] = :mk_shell_command
+
+keymap[			(key['ESC'] <<  8) +	key['s']		] = :mk_fulltext_search
+keymap[			(key['ESC'] <<  8) +	key['S']		] = :mk_fulltext_search_all
+
+keymap[			(key['C-x'] <<  8) +	key['i']		] = :mk_identify_mail
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# 行テキスト入力ビュー、キーマップ定義
+view = :TEXTBOX; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :GLOBAL
+
+keymap[									key['C-h']		] = :mk_delete_backward_char
+keymap[									key['C-u']		] = :mk_clear_textbox
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# 新規フォルダ名入力ビュー、キーマップ定義
+view = :CREATE_FOLDER; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :TEXTBOX
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# インクリメンタル検索ビュー、キーマップ定義
+view = :INC_SEARCH; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :TEXTBOX
+
+keymap[									key['C-s']		] = :mk_isearch_forward
+keymap[									key['C-r']		] = :mk_isearch_backward
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# インクリメンタル検索ビュー、キーマップ定義
+view = :FTEXT_SEARCH; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :TEXTBOX
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# Wiki ページ新規作成ビュー、キーマップ定義
+view = :WIKI_CREATE_PAGE; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = :TEXTBOX
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+# 割り込みキーマップ定義
+view = :INTERRUPT; keymap = {}; prefix_keymap = {}
+keymap[									:PARENT			] = nil
+
+keymap[									key['C-g']		] = :mk_global_quit
+
+keymap[									:PREFIX			] = prefix_keymap
+@mave_keymaps[view] = keymap
+
+__END__
+
+####next-thread
+####previous-thread
+####link-threads
+####unlink-threads
+####restore-threads
+

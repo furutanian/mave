@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+$VERBOSE = nil
+
+require './mave_base'
+require './mave_controller'
+require './mave_models'
+
+load 'mave.config'
+
+#	周期的なメールフェッチのための crontab の設定例
+#
+#	*/10 * * * * cd ~/public_html/maverick; ./mave_fetch
+
+class MaveViews
+
+	def initialize(*dummy)
+	end
+end
+
+class MaveStatus
+
+	def initialize(*dummy)
+	end
+
+	def log(log)
+		print(sprintf(*log) + $/)
+		true
+	end
+
+	def update_lastlog(log)
+		log(log)
+	end
+end
+
+mave = MaveController.new({:CONFIGS => @configs})
+mave.fetch_mail_pop
+#mave.import_mail												# import させることも
+mave.kill_mave rescue print($!.message + $/)
+
+__END__
+

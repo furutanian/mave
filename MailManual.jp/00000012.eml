@@ -1,0 +1,24 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTAuIBskQiVhITwlayROMFxGMCEiJTMlVCE8ISI6bz18GyhC?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.525652.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  メール一覧ビューで、Ctrl + x、m と、キーを押すと、別のフォルダにメールを移動できます。
+  フォルダ一覧ビューが開くので、移動先のフォルダを選択してください。
+
+  Ctrl + x、c と、キーを押すと、別のフォルダにメールをコピーできます。
+
+  Ctrl + x、d と、キーを押すと、メールを削除できます。
+  「ゴミ箱」フォルダ以外での削除操作は「ゴミ箱」フォルダへの移動になります。
+  「ゴミ箱」フォルダで削除操作を行うと、メールは完全に削除されます。

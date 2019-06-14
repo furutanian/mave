@@ -1,0 +1,262 @@
+# coding: utf-8
+
+require 'kconv'
+
+#===============================================================================
+#
+#	Mave 設定ファイル
+#
+@configs = {}
+
+@configs[:ACCOUNTS] = []
+#---------------------------------------------------------------
+#
+#	メールアカウント「main」の設定
+#
+account = {}
+account[:NAME]				= 'Main'							# アカウント名(必須)
+account[:ENABLE]			= true								# 有効/無効(必須)
+
+account[:USER_NAME]			= '山田 太郎'						# 送信者名
+account[:USER_ADDRESS]		= 't-yamada@example.com'			# メールアドレス(必須)
+
+account[:POP_SERVER]		= 'pop.example.com'					# メール受信(POP)サーバ
+account[:POP_ACCOUNT]		= 't-yamada'						#  受信アカウント
+account[:POP_PASSWORD]		= 'password'						#  受信パスワード
+account[:POP_KEEP_TIME]		= 24 * 60 * 60						#  サーバに残す時間(秒)
+
+account[:SMTP_SERVER]		= 'smtp.example.com'				# メール送信(SMTP)サーバ
+
+																# インポート設定
+#account[:IMPORT_COMMAND]	= %Q!/usr/bin/find /home/old_user/mave.mails -name '*.eml' | grep -E '/Inbox/' | sed 's/\\/.*\\//& /'| sort -k 2 | sed 's/ //'!
+
+@configs[:ACCOUNTS] << account
+
+#---------------------------------------------------------------
+#
+#	メールアカウント「sub」の設定
+#
+account = {}
+account[:NAME]				= 'Sub'								# アカウント名(必須)
+account[:ENABLE]			= false								# 有効/無効(必須)
+
+account[:USER_ADDRESS]		= 'taro-yamada@yahoo.com'			# メールアドレス(必須)
+
+account[:POP_SERVER]		= 'pop.yahoo.com'					# メール受信(POP)サーバ
+account[:POP_ACCOUNT]		= 'taro-yamada'						#  受信アカウント
+account[:POP_PASSWORD]		= 'password'						#  受信パスワード
+
+account[:SMTP_SERVER]		= 'smtp.yahoo.com'					# メール送信(SMTP)サーバ
+account[:SMTP_ACCOUNT]		= account['pop_account']			#  送信アカウント
+account[:SMTP_PASSWORD]		= account['pop_password']			#  送信パスワード
+account[:SMTP_AUTHTYPE]		= :plain
+
+@configs[:ACCOUNTS] << account
+
+#---------------------------------------------------------------
+#
+#	メールアカウント「gmail」の設定 ※要 tlsmail ライブラリ
+#
+account = {}
+account[:NAME]				= 'Gmail'							# アカウント名(必須)
+account[:ENABLE]			= false								# 有効/無効(必須)
+
+account[:USER_ADDRESS]		= 'taro-yamada@gmail.com'			# メールアドレス(必須)
+
+account[:POP_SERVER]		= 'pop.gmail.com'					# メール受信(POP)サーバ
+account[:POP_PORT]			= 995
+account[:POP_ACCOUNT]		= 'taro-yamada'						#  受信アカウント
+account[:POP_PASSWORD]		= 'password'						#  受信パスワード
+account[:POP_OVER_SSL]		= true								#  SSL を使う
+#account[:POP_SSL_VERIFY]	= OpenSSL::SSL::VERIFY_PEER			#  証明書を検証する
+#account[:POP_SSL_CERTS]	= '/etc/pki/tls/certs/ca-bundle.crt'
+
+account[:SMTP_SERVER]		= 'smtp.gmail.com'					# メール送信(SMTP)サーバ
+account[:SMTP_PORT]			= 587								#  25? / 465? / 587?
+account[:SMTP_ACCOUNT]		= account[:POP_ACCOUNT]
+account[:SMTP_PASSWORD]		= account[:POP_PASSWORD]
+account[:SMTP_AUTHTYPE]		= :plain
+account[:SMTP_OVER_TLS]		= true								#  TLS を使う
+#account[:SMTP_TLS_VERIFY]	= OpenSSL::SSL::VERIFY_PEER			#  証明書を検証する
+#account[:SMTP_TLS_CERTS]	= '/etc/pki/tls/certs/ca-bundle.crt'
+
+@configs[:ACCOUNTS] << account
+
+# tlsmail ライブラリをロード
+#require '/usr/lib/ruby/gems/1.8/gems/tlsmail-0.0.1/lib/tlsmail.rb'
+
+#---------------------------------------------------------------
+#
+#	メールアカウント「MailManual」の設定 ※添付のマニュアルのインポート用
+#
+account = {}
+account[:NAME]				= 'MailManual'						# アカウント名(必須)
+account[:ENABLE]			= true								# 有効/無効(必須)
+
+account[:USER_ADDRESS]		= 'furutanian@gmail.com'			# メールアドレス(必須)
+
+# For import manual.  マニュアルのインポート設定
+account[:IMPORT_COMMAND]	= %Q!/usr/bin/find MailManual* -name '*.eml' 2>&1 | sed 's/\\/.*\\//& /' | sort -k 2 | sed 's/ //'!
+
+account[:INBOX_FOLDER]		= 'Manual'
+
+@configs[:ACCOUNTS] << account
+
+#---------------------------------------------------------------
+#
+#	各メールアカウントの設定をデフォルト値で補う
+#
+@configs[:ACCOUNTS].each {|v|
+
+	v[:POP_PORT]			||= 110
+	v[:POP_KEEP_TIME]		||= 0
+
+	v[:SMTP_PORT]			||= 25
+	v[:SMTP_HELO]			||= 'localhost.localdomain'
+	v[:SMTP_ACCOUNT]		||= nil
+	v[:SMTP_PASSWORD]		||= nil
+	v[:SMTP_AUTHTYPE]		||= :plain
+
+	v[:GREETING]			||= "Hi,\n\n"
+	if(v[:USER_NAME])
+		v[:FROM]			||= "#{(it = v[:USER_NAME].force_encoding('ASCII-8BIT')) !~ /[\x80-\xFF]/n ? \
+								%|"#{it}"| : "=?ISO-2022-JP?B?#{[it.kconv(Kconv::JIS, Kconv::UTF8)].pack('m*').gsub(/\n/, '')}?="} <#{v[:USER_ADDRESS]}>"
+		v[:SIGNATURE]		||= "\nThanks,\n\n-- \n#{v[:USER_NAME]}\n"
+	else
+		v[:FROM]			||= v[:USER_ADDRESS]
+		v[:SIGNATURE]		||= "\nThanks,\n\n-- \n#{v[:USER_ADDRESS]}\n"
+	end
+
+	v[:INBOX_FOLDER]		||= 'Inbox'
+	v[:DRAFT_FOLDER]		||= 'Drafts'
+	v[:OUTBOX_FOLDER]		||= 'Outbox'
+	v[:SENT_FOLDER]			||= 'Sent'
+	v[:TRASH_FOLDER]		||= 'Trash'
+}
+
+#---------------------------------------------------------------
+#
+#	その他の設定
+#
+(it = ENV['HOME']) and home_directory = it
+ENV['SCRIPT_NAME'] =~ %r|~([^/]+)| and home_directory = '/home/%s' % $1
+@configs[:ROOT_DIRECTORY]		= "#{home_directory}/mave.mails"
+#@configs[:ROOT_DIRECTORY]		= 'c:/Documents and Settings/username/My Documents/mails'
+@configs[:POP_DIRECTORY]		= @configs[:ROOT_DIRECTORY] + '/_pop'
+
+revision						= '$Revision: 3.99 $' =~ /:\s+(\d+)(\.\d+)/
+version							= ($1.to_i - 1).to_s + $2
+sys_sig							= (it = RUBY_PLATFORM) =~ /i.86-mswin32/ ? it : `uname -n -r -o`.chomp
+@configs[:MAILER]				= "Mave version #{version} (#{$?.to_i == 0 ? sys_sig : 'unknown'})"
+@configs[:APLNAME]				= "Textbase Mailer 'Mave' version #{version}"
+hostname						= `hostname`.chomp rescue true
+@configs[:HOSTNAME]				= "#{$?.to_i == 0 ? hostname : 'unknown'}"
+
+Intl.bind_text_domain('mave-tokyo-utf8')
+Intl.bind_text_domain('mave-osaka-euc')
+Intl.set_text_domain('mave-tokyo-utf8')
+
+@configs[:TERMINAL_CHARSET]		= 'UTF-8'
+#@configs[:TERMINAL_CHARSET]	= 'EUC-JP'
+#@configs[:TERMINAL_CHARSET]	= 'SHIFT_JIS'
+@configs[:EDITOR_CHARSET]		= 'UTF-8'
+@configs[:FILENAME_CHARSET]		= 'UTF-8'
+
+@configs[:CLUSTER_DIRS]			= 20
+@configs[:CLUSTER_EXT]			= 'mails'
+
+# エディタ設定
+@configs[:EDITOR_TYPE]			= 'system'						# 端末上で起動するエディタの場合
+@configs[:EDITOR]				= '/usr/bin/vim %s'
+#@configs[:EDITOR]				= 'c:\windows\system32\notepad.exe %s'
+#@configs[:EDITOR]				= 'c:\winnt\system32\notepad.exe %s'
+#@configs[:EDITOR]				= 'c:\Program Files\sakura\sakura.exe %s'
+#@configs[:EDITOR_TYPE]			= 'forkexec'					# 別ウィンドウで起動するエディタの場合
+#@configs[:EDITOR]				= '/usr/bin/emacs %s >/dev/null 2>&1'
+
+# ビューア設定
+@configs[:VIEWER_TYPE]			= 'system'						# 端末上で起動するビューアの場合
+@configs[:VIEWER]				= '/usr/bin/less %s'
+#@configs[:VIEWER_TYPE]			= 'forkexec'					# 別ウィンドウで起動するビューアの場合
+#@configs[:VIEWER]				= '/usr/bin/gedit --new-window %s >/dev/null 2>&1'
+
+# ファイルマネージャ設定
+#@configs[:FILE_MANAGER_TYPE]	= 'system'						# 端末上で起動するファイルマネージャ(？)の場合
+@configs[:FILE_MANAGER_TYPE]	= 'forkexec'					# 別ウィンドウで起動するファイルマネージャの場合
+#@configs[:FILE_MANAGER]		= '/usr/bin/nautilus %s >/dev/null 2>&1'
+@configs[:FILE_MANAGER]			= '/usr/bin/caja %s >/dev/null 2>&1'
+
+# スクリーンロック / POP フック/ QUIT フック設定
+@configs[:SCREEN_LOCK_COMMAND]	= '/usr/bin/gnome-screensaver-command -l'
+#@configs[:SCREEN_LOCK_COMMAND]	= '/usr/bin/mate-screensaver-command -l; ' + \
+#	"wget -o /dev/null -O /dev/null 'http://webserver/~user/d-board.rhtml?state=notin'"
+#@configs[:POP_HOOK_COMMAND]	= \
+#	"wget -o /dev/null -O /dev/null 'http://webserver/~user/d-board.rhtml?state=in'"
+#@configs[:KILL_HOOK_COMMAND]	= \
+#	"wget -o /dev/null -O /dev/null 'http://webserver/~user/d-board.rhtml?state=home'"
+
+# ファイル識別コマンド設定
+@configs[:FILE_IDENTIFIER]		= '/bin/echo "application/octet-stream; charset=binary"'
+#@configs[:FILE_IDENTIFIER]		= '/usr/bin/file -b -i "%s" 2>/dev/null'
+
+# クリッピングの設定
+@configs[:CLIP_FILENAME]		= @configs[:POP_DIRECTORY] + '/mave_clip'
+@configs[:CLIP_ROTATION]		= ['', '.1', '.2', '.3', '.4']
+@configs[:CLIP_HEADER]			= '"\n\t* #{mail.subject.decode_cs(@configs[:EDITOR_CHARSET], "UTF-8")}\n\t  #{mail.message_id} line:#{nth + 1}\n"'
+@configs[:CLIP_BODY]			= "\t- %s\n"
+
+#===============================================================================
+#
+#	時刻表現定義
+#
+class Time
+
+	@@mystrftime_len = nil
+
+	def self.mystrftime_len
+		@@mystrftime_len || @@mystrftime_len = self.now.mystrftime.size
+	end
+
+	def mystrftime(rel = true)
+		diff = ((Time.now.to_i + utc_offset) / 86400) - ((to_i + utc_offset) / 86400)
+		if(diff == 0 and rel)
+			'      Today %2d:%02d' % [hour, min]
+		elsif(diff == 1 and rel)
+			'  Yesterday %2d:%02d' % [hour, min]
+		elsif(diff < 180)
+			'%3s, %2d %3s %2d:%02d' % [							# 'Sun,  1 Jan  0:00'
+				['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][wday], day,
+				['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][mon], hour, min,
+			]
+		else
+			'%3s, %2d %3s  %4d' % [								# 'Sun,  1 Jan  2001'
+				['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][wday], day,
+				['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][mon], year,
+			]
+		end
+	end
+=begin
+	def mystrftime(rel = true)
+		diff = ((Time.now.to_i + utc_offset) / 86400) - ((to_i + utc_offset) / 86400)
+		if(diff == 0 and rel)
+				'    今日 %2d:%02d' % [hour, min]
+		elsif(diff == 1 and rel)
+				'    昨日 %2d:%02d' % [hour, min]
+		elsif(diff < 180)
+			'%2d/%2d %s %2d:%02d' % [							# ' 1/ 1 日  0:00'
+				mon, day, ['日', '月', '火', '水', '木', '金', '土'][wday], hour, min,
+			]
+		else
+			'%2d/%2d %s  %4d' % [								# ' 1/ 1 日  2001'
+				mon, day, ['日', '月', '火', '水', '木', '金', '土'][wday], year,
+			]
+		end
+	end
+=end
+	def myexectime
+		'%02d:%02d:%02d' % [hour, min, sec]
+	end
+end
+
+__END__
+

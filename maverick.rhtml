@@ -1,0 +1,233 @@
+<HTML><% head =<<HEAD
+	<HEAD>
+	<META http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+	<TITLE>Maverick%s</TITLE>
+	<LINK rel='shortcut icon' href='favicon.ico' type='image/vnd.microsoft.icon'>
+	<LINK rel='icon' href='favicon.png' type='image/png'>
+	<STYLE type='text/css'><!--
+		A { text-decoration: none; }
+		A:link { color: gray; }
+		A:visited { color: black; }
+		A:hover { color: red; }
+	--></STYLE>
+	</HEAD>
+HEAD
+	require 'cgi'
+	cgi = CGI.new
+
+	require './mave_base'
+	require './mave_models'
+
+	load './mave.config'
+
+	class Maverick
+
+		attr_reader :script
+		attr_reader :folders
+
+		def initialize(params)
+			@configs = params[:CONFIGS]
+			@script = ''	# File.basename(ENV['SCRIPT_NAME'])
+#			@configs[:XDBM_FLAGS] = XDBM::NOLOCK | XDBM::READER
+			@folders = MaveFolders.new({:CONFIGS => @configs})
+			MaveMail.set_address_book(@address = MaveAddressBook.new({:CONFIGS => @configs}))
+			@separator = '=' * 80
+		end
+
+		def each_folder
+			@folders.each {|folder|
+				yield({
+					:NAME		=> folder.name,
+					:LIST_NAME	=> folder.configs[:LIST_NAME],
+					:N			=> folder.flags_sq.get_n,
+				})
+			}
+		end
+
+		def each_mail(folder_name, startsq = nil, n_max = 20)
+			folder = @folders.open_folder(folder_name)
+			sqs = []; n = n_max; folder.each_sq(startsq) {|sq, level|
+				sqs << sq
+				(n -= 1) < 0 and break
+				mail = folder.get_mail(sq)
+				yield({
+					:SQ			=> sq,
+					:ABSTRACT	=> folder.abstract_of_mail(sq, mail, {}, '　' * level)
+				})
+			}
+			n = n_max; folder.reverse_each_sq(sqs.shift) {|sq, level|
+				sqs.unshift(sq)
+				(n -= 1) < 0 and break
+			}
+			sqs.unshift(sqs[0]) while((n -= 1) > -2)
+			sqs
+		end
+
+		def toggle_fold(folder_name, sq)
+			folder = @folders.open_folder(folder_name)
+			folder.fold?(sq) ? folder.unfold(sq) : folder.fold(sq)
+		end
+
+		def each_mail_line(folder_name, sq, n_max = 9999)
+			MaveMail.line_with_type
+			folder = @folders.open_folder(folder_name)
+			folder.red(sq)
+			mail = folder.get_mail(sq)
+			it = mail.pseudo_from		and yield(_('   From: ') + it)
+			it = mail.pseudo_to			and yield(_('     To: ') + it)
+			it = mail.pseudo_cc			and yield(_('     Cc: ') + it)
+			it = mail.date				and yield(_('   Date: ') + it.mystrftime(false))
+			it = mail.subject.decode_mh	and yield(_('Subject: ') + it)
+			yield(@separator)
+			in_pre = true
+			(0..n_max).each {|nth|
+				line = mail[nth] or break
+				while(!line.is_a?(String))
+					line[0] == 'multipart/alternative' and is_alter = true
+					line[0] == 'text/html' and is_html = true
+					line = line[1]
+				end
+				if(is_alter and !is_html)
+				elsif(is_html)
+					in_pre and (in_pre = false or yield('</TT></PRE>'))
+					yield(line)
+				else
+					in_pre or (in_pre = true and yield('<PRE><TT>'))
+					yield(CGI.escapeHTML(line).chomp)
+				end
+			} if(mail)
+			in_pre and yield('</TT></PRE>')
+		end
+
+		def each_raw_mail_line(folder_name, sq, n_max = 9999)
+			folder = @folders.open_folder(folder_name)
+			mail = folder.get_mail(sq)
+			mail.rewind
+			mail.each {|line|
+				yield(line.chomp)
+			}
+		end
+
+		def get_rootsq_by_sq(folder_name, sq)
+			folder = @folders.open_folder(folder_name)
+			folder.get_rootsq_by_sq(sq)
+		end
+
+		def fulltext_search(folder_name, query, max, skip)
+			folder = @folders.open_folder(folder_name)
+			folder.methods.include?(:fulltext_search) or raise('no method')
+			folder.fulltext_search({:QUERY => query, :SKIP => skip, :MAX => max})
+		end
+
+		def close
+			@folders.close
+			@address.close
+		end
+	end
+
+	maverick = Maverick.new({:CONFIGS => @configs})
+
+	search_form =<<SEARCH_FORM
+	<FORM name='search' method='get' action='%s'>
+		<INPUT type='hidden' name='view' value='search'>
+		<INPUT type='hidden' name='folder' value='%s'>
+		<INPUT type='text' name='query' value='%s'>
+		<INPUT type='submit' name='send' value='Search'>
+	</FORM>
+SEARCH_FORM
+
+	#===========================================================================
+	#
+	#	一覧画面
+	#
+	if(!cgi.params['view'][0] or cgi.params['view'][0] == 'summary') %>
+<%=	head % ''
+%>	<BODY>
+	<H1>Maverick</H1>
+	<HR>
+<%	maverick.each_folder {|folder|
+%>		<A href='<%= maverick.script %>?folder=<%= folder[:NAME] %>'>[<%= CGI.escapeHTML(folder[:LIST_NAME]) %>(<%= folder[:N] %>)]</A>
+<%	}
+%>	<HR>
+	<PRE><TT><%
+	cgi.params['req'][0] == 'fold' and maverick.toggle_fold(cgi.params['folder'][0], cgi.params['sq'][0])
+	sqs = maverick.each_mail(folder = cgi.params['folder'][0] || 'Inbox', cgi.params['startsq'][0], n_max = 30) {|mail|
+		%><A href='<%= maverick.script %>?view=mail;folder=<%= folder %>;sq=<%= mail[:SQ] %>'><%= CGI.escapeHTML(mail[:ABSTRACT]) %></A
+		><A href='<%= maverick.script %>?folder=<%= folder %>;sq=<%= mail[:SQ] %>;req=fold'> &lt;</A>
+<%	}
+	%></TT></PRE>
+	<A href='<%= maverick.script %>?folder=<%= folder %>'>[Top]</A>
+	<A href='<%= maverick.script %>?folder=<%= folder %>;startsq=<%= sqs[ 2] %>'>[↑PagePrev]</A>
+	<A href='<%= maverick.script %>?folder=<%= folder %>;startsq=<%= sqs[-3] %>'>[↓PageNext]</A>
+	<HR>
+<%=	search_form % [maverick.script, folder, '']
+%>	<HR>
+	</BODY>
+<%
+	#===========================================================================
+	#
+	#	メール閲覧画面
+	#
+	elsif(cgi.params['view'][0] == 'mail') %>
+<%=	head % ' mail'
+%>	<BODY>
+	<H1>Maverick mail</H1>
+	<HR>
+<%	rootsq = maverick.get_rootsq_by_sq(folder = cgi.params['folder'][0], sq = cgi.params['sq'][0])
+%>	<A href='<%= maverick.script %>?folder=<%= folder %>;startsq=<%= rootsq %>'>[↑Root]</A>
+	<A href='<%= maverick.script %>?folder=<%= folder %>;startsq=<%= sq %>'>[←Summary]</A>
+	<A href='<%= maverick.script %>?view=raw;folder=<%= folder %>;sq=<%= sq %>'>[Raw]</A>
+	<PRE><TT><% maverick.each_mail_line(folder, sq) {|line|
+%><%= line %>
+<%	}
+%>	<A href='<%= maverick.script %>?folder=<%= folder %>;startsq=<%= rootsq %>'>[↑Root]</A>
+	<A href='<%= maverick.script %>?folder=<%= folder %>;startsq=<%= sq %>'>[←Summary]</A>
+	<HR>
+	</BODY>
+<%
+	#===========================================================================
+	#
+	#	生メール閲覧画面
+	#
+	elsif(cgi.params['view'][0] == 'raw') %>
+<%=	head % ' raw mail'
+%>	<BODY>
+	<H1>Maverick raw mail</H1>
+	<HR>
+	<A href='<%= maverick.script %>?view=mail;folder=<%= folder = cgi.params['folder'][0] %>;sq=<%= sq = cgi.params['sq'][0] %>'>[←Mail]</A>
+	<PRE><TT><% maverick.each_raw_mail_line(folder, sq) {|line|
+%><%= CGI.escapeHTML(line) %>
+<%	} %></TT></PRE>
+	<A href='<%= maverick.script %>?view=mail;folder=<%= folder %>;sq=<%= sq %>'>[←Mail]</A>
+	<HR>
+	</BODY>
+<%
+	#===========================================================================
+	#
+	#	メール検索結果画面
+	#
+	elsif(cgi.params['view'][0] == 'search') %>
+<%=	head % ' search'
+%>	<BODY>
+	<H1>Maverick search</H1>
+	<HR>
+<%	if(results = maverick.fulltext_search(folder = cgi.params['folder'][0], query = cgi.params['query'][0], max = (cgi.params['max'][0] || '10').to_i, skip = (cgi.params['skip'][0] || '0').to_i))
+%><%=	search_form % [maverick.script, folder, CGI.escapeHTML(query)]
+%><%=	from = to = 0 and (it = results[:ITEMS]).size > 0 and from = it.first[:N] and to = it.last[:N]
+		'%d - %d of %d results for "%s"' % [from, to, results[:HIT], query]
+%>	<HR>
+<%	n = skip; results[:ITEMS].each {|item|
+%>		<H4><A href='<%= maverick.script %>?view=mail;folder=<%= folder %>;sq=<%= item[:SQ] %>'><%= '%d. %s' % [n += 1, CGI.escapeHTML(item[:TITLE])] %></A></H4>
+		<BLOCKQUOTE><%= CGI.escapeHTML(item[:SNIPPET]) %></BLOCKQUOTE>
+<%	}
+%>	<A href='<%= maverick.script %>?folder=<%= folder %>'>[Top]</A>
+	<A href='<%= maverick.script %>?view=search;folder=<%= folder %>;query=<%= CGI.escape(query) %>;max=<%= max %>;skip=<%= skip - max %>'>[↑SearchPrev]</A>
+	<A href='<%= maverick.script %>?view=search;folder=<%= folder %>;query=<%= CGI.escape(query) %>;max=<%= max %>;skip=<%= skip + max %>'>[↓SearchNext]</A>
+<%	else
+%>		no results
+<%	end
+%>	<HR>
+	</BODY>
+<%	end
+	maverick.close
+%></HTML>

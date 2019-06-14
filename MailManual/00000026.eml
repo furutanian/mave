@@ -1,0 +1,33 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?Tm90ZTo=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.491134.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+  When multibyte character is troubled.
+  Standard curses library of Ruby doesn't correspond to UTF-8.
+  Please apply the patch to correspond to ncursesw referring to the following sites.
+
+  http://www.itline.jp/~svx/diary/?date=20091022
+
+  In experimentally, Mave corresponds terminal environment of EUC-JP now.
+  In this case, you do not need to apply above patch.
+  Set EUC-JP to ':TERMINAL_CHARSET' in mave.config, and change mave_base.rb a bit.
+  "export LANG=ja_JP.eucjp" might execute from the terminal.
+
+  117     def enspc
+  118 #       return(self)                                            # comment out without UTF-8
+  119 ^       self.gsub(/[\xC0-\xE2][\x80-\xBF]+/) {|c|               #### for UTF8 temporally
+      +-remove this '#'
+
+  And in experimentally, Mave is corresponding Windows console environment with SHIFT_JIS.
+  Set SHIFT_JIS to ':TERMINAL_CHARSET' in mave.config, and try and error.

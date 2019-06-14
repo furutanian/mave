@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+$VERBOSE = nil
+
+require './mave_base'
+require './mave_models'
+
+load 'mave.config'
+
+delete_max = 50; delete_sqs = []
+
+folders = MaveFolders.new({:CONFIGS => @configs})
+trash_folder = folders.open_folder('Trash')
+
+puts(folders.abstract_of_folder(trash_folder))
+
+trash_folder.each_sq(nil, true) {|sq, depth|
+	mail = trash_folder.get_mail(sq)
+	puts('  ' * depth + '-' + mail.subject.decode_mh)
+	delete_sqs.unshift(sq).size == delete_max and break
+}
+delete_sqs.each {|sq|
+	trash_folder.delete_mail(sq)
+	print('.')
+}
+
+puts; puts(folders.abstract_of_folder(trash_folder))
+
+trash_folder.close
+
+__END__
+

@@ -1,0 +1,29 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTUuIBskQiUiJUklbCU5RCIkTjpuQC4bKEI=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.534166.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  $ cp mave_address.sample mave_address
+  $ vi mave_address
+
+  サンプルの記載に沿って、自分、家族、および、知人のメールアドレスを記載してください。
+
+  例)
+    entries << { :MAIL => 'x-tanaka@google.com',                    :ID => '田中',                                  }
+    entries << { :MAIL => 'y-kato@yahoo.co.jp',                     :ID => '加藤@private',  :SEND => 'かとちゃん',  }
+    entries << { :MAIL => 'z-suzuki@abc.co.jp',                     :ID => '鈴木@ABC',      :SEND => '鈴木さん',    }
+
+  アドレス帳スクリプトを実行することで、アドレス帳 DB に登録されます。
+
+  $ ./mave_address

@@ -1,0 +1,30 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTIuIBskQiVhITwlayROJSQlcyVdITwlSBsoQg==?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.529015.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Ctrl + x、Shift + i と、キーを押すと、アカウント毎の設定にしたがって、メールがインポートされます。
+
+  インポートの設定は、インポート対象を標準出力にリストアップするコマンドで表されます。
+
+  例)
+    account[:IMPORT_COMMAND] = %Q!/usr/bin/find /home/old_user/mave.mails -name '*.eml' |
+                                  grep -E '/Inbox/' | sed 's/\\/.*\\//& /'| sort -k 2 | sed 's/ //'!
+
+  別途、テキストファイルに記載しておき、それを cat する方法も考えられます。
+  インポート対象は、1 メール、1 ファイルの形式である必要があります。
+  現状、mbox 形式等には対応していません。
+
+  デフォルト設定には、Mave のマニュアルをメール形式にしたものを、インポートする設定が含まれています。
+  Mave 起動の直後に、Ctrl + x、Shift + i と、キーを押してみてください。

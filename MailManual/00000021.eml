@@ -1,0 +1,23 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTkuIEV4ZWN1dGUgc2hlbGwgY29tbWFuZCBhbmQgaW1wb3J0IHJlc3VsdA==?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.486665.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  You can execute shell command that described in in mail, and result is stored to the folder as a mail format.
+
+  Target cursor to line that has shell command, and press ESC, ! to execute it.
+  If the execution result pseudotakes the form of mail, the mail header information is effect.
+  Subject and Message-ID of the taken mail can be controlled by using this.
+  And the store folder can be specified by using X-Mave-Store-Folder pseudoheader.
+  See imported mail (Subject: example of the script launcher) for the example of scripting the interface.

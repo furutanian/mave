@@ -1,0 +1,42 @@
+# coding: euc-jp
+
+class Intl
+
+	@@catalog = {}
+
+	@@catalog['hello'] \
+			= 'もうかりまっか？'
+	@@catalog['bye'] \
+			= 'ほなさいなら'
+	@@catalog['%1$s is better than %2$s.'] \
+			= '%2$s よか %1$s のがええで。'
+
+	@@catalog['status'] \
+			= 'ステータス'
+	@@catalog['substatus'] \
+			= 'サブステータス'
+	@@catalog['debug'] \
+			= 'デバッグ'
+	@@catalog['summary'] \
+			= 'メール一覧'
+	@@catalog['message'] \
+			= 'メール本文'
+	@@catalog['isearch'] \
+			= 'インクリメンタルサーチ'
+	@@catalog['folder'] \
+			= 'フォルダ一覧'
+
+	@@catalog["Account '%1$s' connecting POP server '%2$s'..."] \
+			= 'POP サーバ %2$s に、アカウント %1$s で接続しとるで……'
+	@@catalog['Connected.'] \
+			= '接続したがな。'
+	@@catalog['Popped (%1$d/%2$d) from [%3$s] [%4$s]'] \
+			= '受信中 (%1$d/%2$d) [%3$s] からの [%4$s] やで'
+	@@catalog['Failed to pop mail. reason=[%s]'] \
+			= 'メールの受信に失敗してもうた。ワケ=[%s]'
+	@@catalog['%1$s mail%2$s popped.'] \
+			= '%1$s 通のメールを受信したで。'
+end
+
+__END__
+

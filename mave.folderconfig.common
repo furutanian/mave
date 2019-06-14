@@ -1,0 +1,447 @@
+# coding: utf-8
+
+#---------------------------------------------------------------
+#
+#	フォルダの基本設定
+#
+@folder_configs = {}
+
+@folder_configs[:LIST_NAME]			= @name						# 表示名
+@folder_configs[:LIST_NAME]			= '受信箱'		if(@name == 'Inbox')
+@folder_configs[:LIST_NAME]			= '草稿'		if(@name == 'Drafts')
+@folder_configs[:LIST_NAME]			= '送信箱'		if(@name == 'Outbox')
+@folder_configs[:LIST_NAME]			= '送信済み'	if(@name == 'Sent')
+@folder_configs[:LIST_NAME]			= 'ゴミ箱'		if(@name == 'Trash')
+@folder_configs[:LIST_NAME]			= 'マニュアル'	if(@name == 'Manual')
+
+@folder_configs[:LIST_PRIORITY]		= 50						# 表示優先度(最高:0-100:最低)
+@folder_configs[:LIST_PRIORITY]		= 10			if(@name == 'Inbox')
+@folder_configs[:LIST_PRIORITY]		= 60			if(@name == 'Drafts')
+@folder_configs[:LIST_PRIORITY]		= 70			if(@name == 'Outbox')
+@folder_configs[:LIST_PRIORITY]		= 80			if(@name == 'Sent')
+@folder_configs[:LIST_PRIORITY]		= 90			if(@name == 'Trash')
+@folder_configs[:LIST_PRIORITY]		= 99			if(@name == 'Manual')
+
+@folder_configs[:BIND_PRIORITY]		= 50						# 振り分け処理優先度(最高:0-100:最低)
+@folder_configs[:BIND_PRIORITY]		= 99			if(@name == 'Trash')
+@folder_configs[:BIND_PRIORITY]		= 100			if(@name == 'Inbox')
+@folder_configs[:BIND_PRIORITY]		= 999			if(@name == 'Drafts')
+@folder_configs[:BIND_PRIORITY]		= 999			if(@name == 'Outbox')
+@folder_configs[:BIND_PRIORITY]		= 999			if(@name == 'Sent')
+
+@folder_configs[:SHORTCUT_HINT]		= 'abc'						# ショートカットキー(希望順)
+@folder_configs[:SHORTCUT_HINT]		= '0'			if(@name == 'Inbox')
+@folder_configs[:SHORTCUT_HINT]		= 'd'			if(@name == 'Drafts')
+@folder_configs[:SHORTCUT_HINT]		= 'o'			if(@name == 'Outbox')
+@folder_configs[:SHORTCUT_HINT]		= 's'			if(@name == 'Sent')
+@folder_configs[:SHORTCUT_HINT]		= 't'			if(@name == 'Trash')
+@folder_configs[:SHORTCUT_HINT]		= 'M'			if(@name == 'Manual')
+
+@folder_configs[:SEND_VIEW]			= false						# 送信ビュー(一覧表示の送信者表示が、送信元でなく、送信先になる)
+@folder_configs[:SEND_VIEW]			= true			if(@name == 'Drafts')
+@folder_configs[:SEND_VIEW]			= true			if(@name == 'Outbox')
+@folder_configs[:SEND_VIEW]			= true			if(@name == 'Sent')
+
+@folder_configs[:EXPORT_DIRECTORY]	= @configs[:ROOT_DIRECTORY] + '/_export'
+
+#---------------------------------------------------------------
+#
+#	振り分け設定(フォルダとして所属を要求するなら true を返す)
+#
+def bind?(mail, account)
+
+#	振り分けデバッグ用
+#	debug("bind?: [%s] [%s] [%s]" % [@name, nil | ((it = mail.from.decode_mh) =~ /^田中/), it])
+
+	# 同一のメールを重複して受信したら捨てる
+	unless(@name == account[:TRASH_FOLDER])
+		# 重複するメールなら、ゴミ箱宛のマークを付けて、受け取らない
+		mail.binding = 'dup' if(@sq_messageid[mail.message_id])
+		return(false) if(mail.binding and mail.binding == 'dup')
+	else
+		# ゴミ箱ならば、ゴミ箱中のメールに重複するメール、および、ゴミ箱宛のマークの付いたメールを受け取る
+		return(true) if(@sq_messageid[mail.message_id])
+		return(true) if(mail.binding and mail.binding == 'dup')
+	end
+
+	# ディレクトリ新規作成の際に path 名等に置換される ※未実装
+#	self_dir = '--mave_folder_path--'
+
+	# インポートの際の振り分け用 ※未実装
+#	return true if(mail.header['X-mave-import-from'] =~ %r!/--mave_folder_base--/!)
+
+	# 件名に特定の文字列が含まれれば、取得
+#	return true if(mail.subject.decode_mh =~ /\[ruby:\d+\]/)	# Ruby ML http://www.ruby-lang.org/ja/community/mailing-lists/
+
+	# 既存のメールに関連のあるメールなら、取得
+	mail.each_in_reply_to {|id|
+		return(true) if(@sq_messageid[id])
+	}
+	mail.each_reference {|id|
+		return(true) if(@sq_messageid[id])
+	}
+
+	# 該当せず
+#	false
+
+	@name == account[:INBOX_FOLDER]								# フォルダ名が Inbox なら無条件に要求する
+end
+
+#---------------------------------------------------------------
+#
+#	件名を元にスレッドをつなぐ場合の識別子を返す
+#
+def hash_subject(subject)
+	source = subject.decode_mh.gsub(/[\s]/, '')
+	hint = source.size > 40 ? source[-30, 999] : (source.size > 20 ? source[5, 999] : nil)
+	[hint ? Digest::MD5.hexdigest(hint) : nil, hint]
+end
+
+#---------------------------------------------------------------
+#
+#	全文検索設定
+#
+def fulltext_search(params)
+
+	query = params[:QUERY] || ''
+	skip = (params[:SKIP] || '0').to_i
+	max  = (params[:MAX] || '10').to_i
+
+	#-----------------------------------------------------------
+	#
+	#	Hyper Estraier 設定例
+	#
+	#		定期的なインデックス更新のための crontab の設定例
+	#		15 * * * * cd ~/mave.mails/Inbox; find . -type f -name "*eml" | /usr/bin/estcmd gather -cl -fm -cm casket -
+	#
+	`which estcmd >/dev/null 2>&1`
+	if($?.exitstatus == 0 and File.directory?(index_path = '%s/casket' % path))
+		results = {}; results[:ITEMS] = []; item = nil
+		IO.popen("estcmd search -vh -ord '@mdate NUMD' -max %d -sk %d %s '%s' 2>&1" % [max, skip, index_path, query]) {|stdout|
+			n = 0; stdout.each {|line|
+				line.force_encoding('UTF-8')
+				if(line =~ /^-{8}\[.+\]-{8}/)					# Hyper Estraier の検索結果を解析
+					n > 1 and results[:ITEMS] << item
+					item = {} and item[:SNIPPET] = '' and n += 1 and next
+				end
+				if(n < 2)
+					line =~ /^(.+)\t(.*)/ and results[('_' + $1).upcase.to_sym] = $2
+				else
+					line =~ /^$/ and next
+					item[:N] = skip + n - 1
+					if(line =~ %r|file://(/\S+)|)
+						mailfile = File.new($1) rescue raise('Target file was not found.')
+						message_id = MaveMail.new({:FILE => mailfile}).message_id rescue raise('Target mail format was not correct.')
+						item[:SQ] = get_sq_by_message_id(message_id)
+					end
+					line =~ /^(URI|Title):\s+(.+)/ and item[$1.upcase.to_sym] = $2 and next
+					item[:SNIPPET] << line.chomp
+				end
+			}
+		}
+		results[:QUERY] = query
+		results[:HIT] = results[:_HIT].to_i
+		results[:TARGET_FOLDER] = self.name
+		results[:STORE_FOLDER] = 'H-Est_Results'
+		results[:MESSAGE_ID] = '<%017.6f.%s@mave.%s>' % [Time.now.to_f, 'hest.results', @configs[:HOSTNAME]]
+		results[:NEXT_SKIP] = skip + max
+		return(results)
+	end
+
+	#-----------------------------------------------------------
+	#
+	#	Namazu 設定例
+	#
+	#		定期的なインデックス更新のための crontab の設定例
+	#		45 * * * * cd ~/mave.mails/Sent; mkdir -p nmzidx; /usr/bin/mknmz -k -z . -O nmzidx
+	#
+	`which namazu >/dev/null 2>&1`
+	if($?.exitstatus == 0 and File.directory?(index_path = '%s/nmzidx' % path))
+		results = {}; results[:ITEMS] = []; item = nil; buffer = []
+		IO.popen("unset QUERY_STRING; LANG=ja_JP.EUC-JP namazu --max %d --whence %d --late '%s' %s 2>&1" % [max, skip, query.kconv(Kconv::EUC, Kconv::UTF8), index_path]) {|stdout|
+			n = 0; stdout.each {|line0|
+				line0 =~ /^\s*$/ and item = {} and buffer.clear
+				line = line0.chomp.kconv(Kconv::UTF8, Kconv::EUC)	# Namazu の検索結果を解析
+				n == 0 and line =~ /マッチする\s*(\d+)\s*個の文書/ and results[:_HIT] = $1.to_i
+				buffer << line
+				if(line =~ %r|(^/\S+)\s+.+\d+ bytes\)$|)
+					item[:N] = skip + (n += 1)
+					mailfile = File.new($1) rescue raise('Target file was not found.')
+					message_id = MaveMail.new({:FILE => mailfile}).message_id rescue raise('Target mail format was not correct.')
+					item[:SQ] = get_sq_by_message_id(message_id)
+					item[:TITLE] = buffer[-5].gsub(/^\d+\.\s+/, '')
+					item[:SNIPPET] = buffer[-2]
+					item[:URI] = 'file://' + buffer[-1]
+					results[:ITEMS] << item
+				end
+			}
+		}
+		results[:QUERY] = query
+		results[:HIT] = results[:_HIT].to_i
+		results[:TARGET_FOLDER] = self.name
+		results[:STORE_FOLDER] = 'Namazu_Results'
+		results[:MESSAGE_ID] = '<%017.6f.%s@mave.%s>' % [Time.now.to_f, 'namazu.results', @configs[:HOSTNAME]]
+		results[:NEXT_SKIP] = skip + max
+		return(results)
+	end
+
+	# 全文検索エンジン見つからず
+	false
+end
+
+#---------------------------------------------------------------
+#
+#	Wiki へのアクセス
+#
+def access_wiki(query, script = '')
+
+	uri = URI.parse(@wiki_configs[:URI] + script)
+	req = Net::HTTP::Post.new(uri.path, query[:COOKIES])
+	req.set_form_data(query)
+	req.basic_auth(@wiki_configs[:SITE_USER], @wiki_configs[:SITE_PASS]) if(@wiki_configs[:SITE_USER])
+
+	http = Net::HTTP.new(uri.host, uri.port, @wiki_configs[:PROXY_ADDR], @wiki_configs[:PROXY_PORT], @wiki_configs[:PROXY_USER], @wiki_configs[:PROXY_PASS])
+	if(uri.scheme == 'https')
+		http.use_ssl = true 
+		http.verify_mode = @wiki_configs[:SSL_VERIFY]
+		http.ca_file = @wiki_configs[:SSL_CERTS]
+	end
+
+	http.start {|s| s.request(req) }
+end
+
+#---------------------------------------------------------------
+#
+#	Wiki 文書リストの取得
+#
+def fetch_wiki_index
+
+	if(@wiki_configs[:TYPE] == 'Hiki')
+
+		res = access_wiki({
+			'c' => 'index',
+		})
+
+		doc = Nokogiri::HTML(res.body.html_utf8, nil, 'UTF-8')
+		site = (it = doc.xpath('.//title')[0]) ? it.text.gsub(/ - .*/, '') : 'Unknown'
+		pages = []; doc.xpath('.//div[@class="day"]').each {|div|
+			div.xpath('.//li').each {|li|
+				elems = {}
+				li.text =~ /(.+?): (.+)/
+				elems[:TITLE] = $1
+				tsrc = []; $2.strip.split(/[-: ]/).values_at(0, 1, 2, 4, 5, 6).each {|i| tsrc << i.to_i }
+				elems[:TIME] = Time.local(*tsrc)
+				elems[:URI] = li.xpath('.//a')[0]['href']
+				elems[:MESSAGE_ID] = '<%s.%s.%s@mave.%s>' % [elems[:URI], @wiki_configs[:URI_HASH], 'wiki', @configs[:HOSTNAME]]
+				pages << elems
+			}
+		}
+
+	elsif(@wiki_configs[:TYPE] == 'tDiary')
+
+		date = '201404'
+		res = access_wiki({
+			'date' => date,
+		})
+
+		doc = Nokogiri::HTML(res.body.html_utf8, nil, 'UTF-8')
+		site = (it = doc.xpath('.//title')[0]) ? it.text.gsub(/ - .*/, '') : 'Unknown'
+		pages = []; doc.xpath('.//h2').each {|h2|
+			elems = {}
+			h2.xpath('.//span[@class="title"]').each {|span|
+				elems[:TITLE] = span.text
+			}
+			h2.xpath('.//span[@class="date"]').each {|span|
+				elems[:URI] = span.xpath('.//a')[0]['href']
+				elems[:TIME] = Time.local($1, $2, $3) if(elems[:URI] =~ /date=(\d{4})(\d{2})(\d{2})/)
+			}
+			elems[:MESSAGE_ID] = '<%s.%s.%s@mave.%s>' % [elems[:URI], @wiki_configs[:URI_HASH], 'wiki', @configs[:HOSTNAME]]
+			pages << elems
+		}
+
+	else
+
+		site = 'Unknown Wiki type'; pages = []
+	end
+
+	[site, pages]
+end
+
+#---------------------------------------------------------------
+#
+#	Wiki 文書の取得
+#
+def fetch_wiki_page(page)
+
+	if(@wiki_configs[:TYPE] == 'Hiki')
+
+		res = access_wiki({
+			'c' => 'edit',
+			'p' => page[:TITLE],
+		})
+
+	elsif(@wiki_configs[:TYPE] == 'tDiary')
+
+		res = access_wiki({
+			'edit'	=> 'true',
+			'year'	=> page[:TIME].year.to_s,
+			'month'	=> page[:TIME].month.to_s,
+			'day'	=> page[:TIME].day.to_s,
+		}, 'update.rb')
+
+	end
+
+	cookies = {}; CGI::Cookie.parse(res['set-cookie']).each {|k, v|
+		@wiki_configs[:COOKIE_PARAMS][k] and cookies[k] = CGI.escape(v[0])
+	}
+	doc = Nokogiri::HTML(res.body.html_utf8, nil, 'UTF-8')
+	inputs = {}; doc.xpath('.//input').each {|input|
+		k = input['name']; v = input['value']
+		@wiki_configs[:CGI_PARAMS][k] and inputs[k] ||= CGI.escape(v)	#### ||= ?
+	}
+	contents = []; textareas = doc.xpath('.//textarea')
+	CGI.unescapeHTML(textareas[0].text).split(/\r?\n/).each {|line|
+		contents << line
+	}
+
+	{	:CODE		=> res.code,
+		:COOKIES	=> cookies,
+		:INPUTS		=> inputs,
+		:CONTENTS	=> contents	}
+end
+
+#---------------------------------------------------------------
+#
+#	Wiki 文書の新規作成
+#
+def create_wiki_page(title)
+
+	elems = {}
+	elems[:TITLE] = title
+	elems[:TIME] = Time.now
+	elems[:URI] = URI.escape(title)
+	elems[:MESSAGE_ID] = '<%s.%s.%s@mave.%s>' % [elems[:URI], @wiki_configs[:URI_HASH], 'wiki', @configs[:HOSTNAME]]
+	elems
+end
+
+#---------------------------------------------------------------
+#
+#	Wiki 文書の送信
+#
+def send_wiki_page(request)
+
+	if(@wiki_configs[:TYPE] == 'Hiki')
+
+		query = {
+			:COOKIES			=> {},
+			'contents'			=> '',
+			'keyword'			=> '',
+		}
+
+		request.each {|k, v|
+			if(k == :COOKIES)
+				cookie = []; v.each {|ck, cv|
+					cookie << '%s=%s' % [ck, CGI.unescape(cv)]
+				}
+				query[:COOKIES]['cookie'] = cookie.join('; ')
+			elsif(@wiki_configs[:CGI_PARAMS][k])
+				query[k] = CGI.unescape(v)
+			elsif(k == :CONTENTS)
+				v.each {|line|
+					query['contents'] << line.encode(@wiki_configs[:CHARSET], 'UTF-8', :invalid => :replace, :undef => :replace) + "\r\n"
+				}
+			end
+		}
+
+		res = access_wiki(query)
+
+		code = res.code; body = []
+		doc = Nokogiri::HTML(res.body.html_utf8, nil, 'UTF-8')
+		doc.xpath('.//body').each {|bodie|
+			bodie.text =~ /Wait or Click here/ and \
+				body << 'Update succeeded.'									# 更新成功
+			bodie.text =~ /Invalid Session \(maybe timeout\)/ and \
+				code = 498 and body << 'Invalid session(maybe timeout).'	# セッションエラー
+			bodie.xpath('.//div[@class="msg"]').each {|div|
+				div.text =~ /There is a conflict with your updates/ and \
+					code = 499 and body << div.text							# 編集の衝突を検出
+			}
+			body.size == 0 and code = 500 and body = bodie.text.split(/\n+/)	# それ以外の状況
+		}
+
+	elsif(@wiki_configs[:TYPE] == 'tDiary')
+
+		query = {
+			:COOKIES			=> { 'Referer' => 'http://www.example.com/~t-yamada/diary/update.rb' },
+			'contents'			=> '',
+		}
+
+		request.each {|k, v|
+			if(@wiki_configs[:CGI_PARAMS][k])
+				query[k] = CGI.unescape(v)
+			elsif(k == :CONTENTS)
+				v.each {|line|
+					query['contents'] << line.encode(@wiki_configs[:CHARSET], 'UTF-8', :invalid => :replace, :undef => :replace) + "\r\n"
+				}
+			end
+		}
+
+		res = access_wiki(query)
+
+		code = res.code; body = []
+
+		open('/tmp/mave-wiki.debug', 'a').write(res.body)
+	end
+
+	{	:CODE		=> code, 
+		:BODY		=> body	}
+end
+
+#---------------------------------------------------------------
+#
+#	メール送信前／送信後チェック関数
+#
+def presend(mail)
+
+	# ファイルの添付し忘れ防止機能
+	if(!(it = mail.header['X-mave-attachments']) or it.size == 0 and mail.header['X-mave-confirm-to-send'] != 'confirmed')
+		mail.body_each {|line|
+			if(line !~ /^\s*>/ and line =~ /添付|同封|attach|enclose|pdf|doc|xls|ppt/i)
+				halfname = mail.folder.create_mailfile {|fh|
+					fh.write("X-Mave-Confirm-To-Send: NOT confirmed\n")	# 確認用ヘッダを追加する
+					MavePseudoMail.new({:CONFIGS => @configs, :MODE => :EDIT, :MAIL => mail}).pseudo_each {|line1|
+						fh.write(line1 + "\n")
+					}
+				}
+				new_mail = MavePseudoMail.new({:CONFIGS => @configs, :FILE => File.new(path + '/' + halfname)})
+				overwrite_mail(new_mail, mail)
+				delete(halfname) unless(RUBY_PLATFORM =~ /i.86-mswin32/)	####
+				raise(_('Sending aborted. The \'attach\' keyword found. [%s]') % line.chomp.decode_mh)
+			end
+		}
+	end
+end
+
+def postsend(mail)
+end
+
+#---------------------------------------------------------------
+#
+#	文字列の読み(ローマ字)表記への変換関数
+#
+def phoneticize(string)
+	begin
+		require 'kakasi'										# http://www.notwork.org/~gotoken/ruby/p/kakasi/
+#		Kakasi.kakasi('-Ha -Ka -Ja -Ea -ka -ieuc', string.kconv(Kconv::EUC, Kconv::UTF8)).downcase.tr('^', '-')
+#		IO.popen('kakasi -Ha -Ka -Ja -Ea -ka -iutf8', 'r+') {|kakasi|	# for Fedora 23 kakasi bug
+#			kakasi.puts(string); kakasi.close_write
+#			kakasi.gets.chomp.downcase.tr('^', '-')
+#		}
+		Kakasi.kakasi('-Ha -Ka -Ja -Ea -ka', string).downcase.tr('^', '-')
+	rescue StandardError, ScriptError
+		false
+	end
+end
+
+__END__
+

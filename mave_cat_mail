@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require './mave_base'
+require './mave_models'
+
+load 'mave.config'
+
+unless(message_id = ARGV[0])
+	abort <<USAGE
+Usage: mave_catmail message-id
+Example: $ ./mave_catmail \\<1234567.89ab@example.com\\>
+USAGE
+	exit
+end
+message_id = '<%s>' % message_id unless(message_id =~ /^</)
+
+@configs[:XDBM_FLAGS] = XDBM::NOLOCK | XDBM::READER
+folders = MaveFolders.new({:CONFIGS => @configs})
+
+mail = nil
+folders.each {|folder|
+	mail = folder.get_mail_by_message_id(message_id) and break
+}
+
+if(mail)
+	mail.body_each {|line|
+		print(line.decode_cs(@configs[:EDITOR_CHARSET], 'UTF-8').chomp + $/)
+	}
+else
+	print([_('Mail [%s] not found.') % message_id])
+end
+
+__END__
+

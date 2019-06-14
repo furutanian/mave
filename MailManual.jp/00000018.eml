@@ -1,0 +1,37 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTYuIBskQkU6SVUlVSUhJSQlayROQWA6bhsoQg==?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.535989.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  受信したメールの添付ファイルを閲覧する。
+
+    メール一覧ビューで、Ctrl + x、x と、キーを押すと、メール中のすべての添付ファイルが、関連ディレクトリに展開されます。
+    関連ディレクトリとは、メールと対となるディレクトリで、任意のファイルを保存しておけます。
+    関連ディレクトリは、メール一覧ビューで、ESC、f と、キーを押すことで、指定のファイルマネージャにて開くことができます。
+
+  受信したメールの添付ファイルを修正して返信する。
+
+    メール一覧ビューで、Ctrl + x、r と、キーを押し、返信メールを作成すると、X-Mave-Extract-Targets ヘッダが付加されています。
+    そのまま、メールを編集して保存すると、X-Mave-Extract-Targets ヘッダの下の記載に対応する添付ファイルが、返信メールの関連ディレクトリに展開されます。
+    返信メールに対して、ESC、f と、キーを押すと、関連ディレクトリが開くので、必要に応じて添付ファイルを修正します。
+    Ctrl + x、e と、キーを押して返信メールを編集します。展開された添付ファイルは、X-Mave-Relations ヘッダの下に記載されています。
+    返信メールに添付して返信したい場合、X-Mave-Relations ヘッダの下から、X-Mave-Attachments ヘッダの下に記載を移動します。
+    あとは、通常通り「送信箱」フォルダに移動し、Ctrl + x、s と、キーを押して送信すると、添付されて送信されます。
+
+  新規メールに、新規に添付ファイルを添付して送信する。
+
+    メール一覧ビューで、Ctrl + x、n と、キーを押して新規メールを作成すると、空の X-Mave-Relations ヘッダが付加されています。
+	X-Mave-Relations ヘッダの下に、新規に添付する予定のファイル名を記載して保存すると、関連ディレクトリ内に指定のファイル名の空ファイルが作成されます。
+    新規メールに対して、ESC、f と、キーを押すと、関連ディレクトリが開くので、必要に応じて空ファイルを編集します。
+    あとは、上記と同様に、X-Mave-Relations ヘッダの下から、X-Mave-Attachments ヘッダの下に記載を移動し、送信動作を行います。

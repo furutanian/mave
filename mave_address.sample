@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require './mave_base'
+require './mave_models'
+
+load 'mave.config'
+
+entries = []
+
+entries << {		# 自分のエントリ(詳細サンプル)
+	:MAIL			=> 't-yamada@example.com',					# メールアドレス(必須)
+	:ID				=> '自分@職場',								# 識別名(必須)、宛先指定用
+
+	:DISP			=> '自分',									# 画面表示用
+	:SEND			=> '山田',									# 宛名表示用
+	:READING		=> 'ヤマダ',								# 読み
+
+	:COMPANY		=> '○×ソフトウェア',
+	:DEPARTMENT		=> '△□部◇☆課',
+	:POST			=> '課長',
+	:PHONE			=> '090-1234-1234',
+	:BIRTH			=> '1970-01-01',
+	:BLOOD			=> 'A+',
+}
+
+entries << {		# エラい人(？)のエントリ(詳細サンプル)
+	:MAIL			=> 'nobu-oda@azuchi.jp',					# メールアドレス(必須)
+	:ID				=> '織田@安土城',							# 識別名(必須)、宛先指定用
+
+	:DISP			=> '信長',									# 画面表示用
+	:SEND			=> '信長 殿',								# 宛名表示用
+	:READING		=> 'ノブナガ',								# 読み
+
+	:COMPANY		=> '内閣府',
+	:DEPARTMENT		=> '総理',
+	:POST			=> '大臣',
+	:PHONE			=> '090-5678-5678',
+	:BIRTH			=> '1534-5-12',
+	:BLOOD			=> 'O+',
+}
+
+# その他のエントリ(簡易サンプル)
+entries << { :MAIL => 'x-tanaka@google.com',					:ID => '田中',									}
+entries << { :MAIL => 'y-kato@yahoo.co.jp',						:ID => '加藤@private',	:SEND => 'かとちゃん',	}
+entries << { :MAIL => 'z-suzuki@abc.co.jp',						:ID => '鈴木@ABC',		:SEND => '鈴木さん',	}
+
+entries << { :MAIL => 'furutanian@gmail.com',					:ID => '開発者',								}
+entries << { :MAIL => 'mave_user@example.com',					:ID => 'メイヴユーザ',							}
+
+# ldap サーバからエントリをインポートする
+if(false)
+	require 'ldap'
+	ldap = LDAP::Conn.new('ldap.example.com')					# server
+	ldap.set_option(LDAP::LDAP_OPT_PROTOCOL_VERSION, 3)
+	results = ldap.search2(
+		'ou=People,dc=example,dc=com',							# base
+		LDAP::LDAP_SCOPE_ONELEVEL,								# scope
+		'(objectclass=*)'										# filter
+	)
+	mails = {}; ids = {}										# 無指定/重複チェック用
+	entries.each {|e|
+		mails[e[:MAIL]] = true; ids[e[:ID]] = true;
+	}
+	results.each {|result|
+		print "dn: %s\n" % result['dn']
+		entry = {}
+		mails[entry[:MAIL] = result['mail'][0]] and next
+		ids[entry[:ID] = (result['maveid'] || result['displayName'])[0]] and next
+		print "\t%s / %s\n" % [entry[:ID], entry[:MAIL]]
+		entries << entry
+	}
+	abort														# 確認用
+end
+
+# DB への登録
+address_db = XDBM.new(@configs[:ROOT_DIRECTORY] + '/mave.address', 0600)
+
+mails = {}; ids = {}											# 無指定/重複チェック用
+entries.each {|e|
+	raise("Error in :MAIL. [#{e.inspect}]")	if(!e[:MAIL] or mails[e[:MAIL]])
+	raise("Error in :ID. [#{e.inspect}]")	if(!e[:ID] or ids[e[:ID]])
+	mails[e[:MAIL]] = true; ids[e[:ID]] = true;
+
+	address_db['MAIL:'	+ e[:ID]] = e[:MAIL]
+	address_db['ID:'	+ e[:MAIL]] = e[:ID]
+	address_db['DISP:'	+ e[:MAIL]] = e[:DISP] || e[:ID]
+#	address_db['SEND:'	+ e[:MAIL]] = e[:SEND] || e[:ID]			# English style
+	address_db['SEND:'	+ e[:MAIL]] = e[:SEND] || e[:ID] + ' 様'	# Japanese style
+
+	etc = []; e.each {|key, val|
+		etc << key.to_s + ':' + val
+	}
+	address_db['ETC:'	+ e[:MAIL]] = etc.join("\t")
+}
+
+# 登録状態テスト
+print mail = address_db['MAIL:' + '織田@安土城'], $/
+print address_db['ID:' + mail], $/
+print address_db['DISP:' + mail], $/
+print address_db['SEND:' + mail], $/
+print address_db['ETC:' + mail].gsub(/\t/, "\n"), $/
+
+address_db.reorganize
+address_db.close
+
+__END__
+

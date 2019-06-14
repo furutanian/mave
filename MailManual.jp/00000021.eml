@@ -1,0 +1,23 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTkuIBskQiU3JSclayUzJV4lcyVJJE48QjlUISI3azJMJE48aCRqOX4kXxsoQg==?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.541527.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  メール内に記載されているコマンド列を、シェルコマンドとして実行し、実行結果を、所定のフォルダに、メールとして取り込むことができます。
+
+  シェルコマンドとして実行したい行にカーソルを合わせ、ESC、! と、キーを押すと、該当の行が実行されます。
+  なお、実行結果が、擬似的にメールの形式を取っている場合、メールヘッダの内容が、取り込むメールに反映されます。
+  これを利用して、取り込まれるメールの Subject や Message-ID を制御することができます。
+  また、X-Mave-Store-Folder 疑似ヘッダを利用することで、メールの取り込み先フォルダを指定することもできます。
+  具体的には、記載事例をまとめたメール(件名: スクリプトランチャの例)をご覧下さい。

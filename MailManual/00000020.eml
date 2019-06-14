@@ -1,0 +1,24 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTguIEZ1bGwtdGV4dCBzZWFyY2g=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.485206.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  You can the full-text search of the content of mail each folder, by installing the full-text search engine.
+  The full-text search function is build by combining shell command execution, import result and tagjump functions.
+  The interface for Hyper Estraier and Namazu is prepared as a scripting example.
+  See the fulltext_search method in mave.folderconfig.common for the example of scripting the interface.
+
+  Move to the target folder that wants to do the full-text search, and press ESC, s at summary or preview view to open the full-text search dialog.
+  Input word or phrased for search and press Enter to execute search and result is stored to the folder as a mail format.
+  You can jump to original mail by using the tagjump function on the search result.

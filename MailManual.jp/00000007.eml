@@ -1,0 +1,23 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?NS4gGyRCJWEhPCVrJE48aEZAGyhC?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.500685.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Ctrl + x、p と、キーを押すと、サーバからメールが取得されます。
+
+  デフォルトでは、Mave は、即座にサーバ上からメールを削除しません。
+  メールを削除するまでのタイムラグは「:POP_KEEP_TIME」に設定されています。
+  これにより、現在利用中のメーラと並行して Mave を利用可能です。
+
+  ステータスウィンドウは、PgUp, PgDn でスクロールできます。

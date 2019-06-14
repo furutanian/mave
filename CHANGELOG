@@ -1,0 +1,50 @@
+Changelog of Textbase Mailer 'Mave'
+
+Version 2.99
+	* Refine for ruby 2.0.
+	* Add wiki edit function.
+
+Version 2.98
+	* Add web mail viewer 'Maverick'.
+	* Add incremental search functions with romanized japanese stroke.
+	* Add QDBM support for meta data store of mail.
+	* Add legacy encoding mode for filename of attachment.
+	* Add import address book function from ldap server.
+
+Version 2.97
+	* Add clip(quote) and tagjump function.
+	* Add full-text search function for mail by external engine.
+	* Add execute shell command and import result function.
+	* Add execute present and postsend script function.(For prevent to forget to attach to mail)
+
+Version 2.96
+	* Add extract/enclose attachment files function.(Supprt RFC 2231 extensions)
+	* Add ssl/tls protocol support.(Send/Receive Gmail account)
+	* Correct permissions of related files.
+
+Version 2.95
+	* Add send mail function.
+	* Add address book function.
+	* Add filter and distribute mail function.
+	* Add import mail function.
+	* Add mail viewer(full screen) function.
+
+Version 2.94
+	* Add mail move, copy and delete functions.
+	* Add arrange functions of mail thread relations.
+
+Version 2.93
+	* Add incremental search functions for summary or preview view.
+	* Add move into the folder function by shortcut key.
+
+Version 2.92
+	* Add folder functions.
+
+Version 2.91
+	* Add message edit functions.
+
+Version 2.90
+	* Initial commit.
+	* It can only fetch and explore mails.
+
+[EOF]

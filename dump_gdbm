@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require './xdbm'
+
+ARGV.each {|file|
+	XDBM.new(file, 0600, XDBM::NOLOCK | XDBM::READER).each {|key, value|
+		print "#{key}: <#{value}>\n"
+	}
+}
+
+__END__
+

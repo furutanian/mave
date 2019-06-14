@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require './mave_base'
+require './mave_models'
+
+load 'mave.config'
+
+#@configs[:XDBM_FLAGS] = XDBM::NOLOCK | XDBM::READER
+folders = MaveFolders.new({:CONFIGS => @configs})
+
+address_book = MaveAddressBook.new({:CONFIGS => @configs})
+MaveMail.set_address_book(address_book)
+
+now = Time.now
+message_id = now.strftime("<9999.%Y.%m.9999@mave.calendar>")
+
+update_mail = nil
+folders.each {|folder|
+	update_mail = folder.get_mail_by_message_id(message_id) and break
+}
+
+if(update_mail)
+	halfname = update_mail.folder.create_mailfile {|fh|			# 一時ファイルに書き出す
+		todays = []; finish = false
+		MavePseudoMail.new({:CONFIGS => @configs, :MODE => :EDIT, :MAIL => update_mail}).pseudo_each {|line|
+			line =~ /^\s*<today>/i and todays << line and next
+			if(!finish and line =~ /^\s*(\d{1,2})\(.+\):/ and $1 == now.day.to_s)
+				todays << "<today>==== CURSOR ====" if(todays.size == 0)
+				todays.each {|today|
+					fh.write(today + $/)
+				}
+				finish = true
+			end
+			fh.write(line + $/)
+		}
+	}
+	mail = MavePseudoMail.new({:CONFIGS => @configs, :FILE => File.new(update_mail.folder.path + '/' + halfname)})
+	update_mail.folder.overwrite_mail(mail, update_mail)
+	update_mail.folder.delete(halfname) unless(RUBY_PLATFORM =~ /i.86-mswin32/)	####
+	print([_('Mail [%s] updated.') % message_id])
+else
+	print([_('Mail [%s] not found.') % message_id])
+end
+
+__END__
+

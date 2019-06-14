@@ -1,0 +1,26 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?Ny4gGyRCJSQlcyUvJWolYSVzJT8lazghOncbKEI=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.503385.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  メール一覧ビュー、または、メール本文ビューで、Ctrl + s を押すと、インクリメンタル検索ダイアログが開きます。
+  キー入力の都度、検索が進みます。
+  検索語が見つかった状態で、Ctrl + s を押すと、次を検索します。
+  検索を中断したり、検索ダイアログを閉じるには、Ctrl + g を押します。
+  Ctrl + r を押すと、逆方向に検索します。
+
+  別途、漢字かな変換エンジン KAKASI と、その Ruby バインディングを導入することにより、
+  メール一覧ビューで、ローマ字キー入力によるインクリメンタル検索が可能になります。
+  本機能は、日本語をローマ字変換し、それをキャッシュすることにより実装されています。
+  キャッシュの内容は、ESC、Shift + q を押すことにより確認できます。

@@ -1,0 +1,33 @@
+version: '3'
+services:
+    maverick:
+        image:
+            maverick
+        container_name:
+            maverick_alpha
+        build:
+            context:
+                .
+#           args:
+#               http_proxy: http://user_abc:password@proxy.example.com:8080/
+#               https_proxy: http://user_abc:password@proxy.example.com:8080/
+        ports:
+            - 8081:80
+        privileged:
+            true
+#       environment:
+#           http_proxy: http://user_abc:password@proxy.example.com:8080/
+#           https_proxy: http://user_abc:password@proxy.example.com:8080/
+        volumes:
+            - pv:/var/lib/mave
+        command:
+            bash -c 'bash startup.sh && /sbin/init'
+
+# mkdir pv しておくこと
+volumes:
+    pv:
+        driver_opts:
+            type: none
+            device: /root/docker/maverick/pv
+            o: bind
+

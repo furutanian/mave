@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+$VERBOSE = nil
+
+require './mave_base'
+require './mave_models'
+
+load 'mave.config'
+
+sort = :LIST_PRIORITY; create = help = false; params = []
+ARGV.each {|argv|
+	argv == '-l' and sort = :LIST_PRIORITY
+	argv == '-b' and sort = :BIND_PRIORITY
+	argv == '-c' and create= true
+	argv == '-h' and help = true
+	argv !~ /^-/ and params << argv
+}
+
+if(ARGV.size == 0 or help)
+	abort <<USAGE
+Usage: mave_create_folder [-l] [-b] [-c] folder_name [mave.folderconfig]
+Example: $ ./mave_create_folder -c folder1 mave.folderconfig.folder1
+USAGE
+	exit
+end
+
+folders = MaveFolders.new({:CONFIGS => @configs})
+create and new_folder = folders.open_folder(params[0])
+create or folders.each(sort) {|folder|
+	puts('%3d: %s' % [folder.configs[sort], folders.abstract_of_folder(folder)])
+}
+folders.close
+
+create and it = params[1] and system('cp %s %s/%s/mave.folderconfig' % [it, @configs[:ROOT_DIRECTORY], params[0]])
+
+__END__
+

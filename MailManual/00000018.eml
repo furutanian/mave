@@ -1,0 +1,37 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTYuIEF0dGFjaCBmaWxlIHRvIG1haWw=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.482026.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  To viewing attachment files in received mail.
+
+    In summary view, Press Ctrl + x, x key to extract all attachment files in mail to related directory.
+    The related directory is paired for each mail, that holds some files.
+    In summary view, Press ESC, f key to open related directory by file manager.
+
+  To replying mail with attachment files that had some modify.
+
+    In summary view, Press Ctrl + x, r key to create reply mail that has X-Mave-Extract-Targets header for file extract.
+    After edit and save mail, attachment files are extract to related directory described under X-Mave-Extract-Targets header.
+    Press ESC, f key for reply mail to open related directory by file manager and modify it.
+    Press Ctrl + x, e key to edit mail. Extracted files are described under X-Mave-Relations header.
+    You can move file description to under X-Mave-Attachments header from under X-Mave-Relations header, if you want to attach and reply.
+    Move mail to 'Outbox' folder and press Ctrl + x, s key to send mail with attachment files.
+
+  To send new mail with new attachment files.
+
+    In summary view, Press Ctrl + x, n key to create new mail that has empty X-Mave-Relations header.
+    Describe filenames that you will attach under X-Mave-Relations header, empty files that have same filenames will create in related directory.
+    Press ESC, f key for new mail to open related directory by file manager and modify it.
+    You can send mail with attachment files by move file description to under X-Mave-Attachments header from under X-Mave-Relations header.

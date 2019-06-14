@@ -1,0 +1,155 @@
+# coding: utf-8
+
+#---------------------------------------------------------------
+#
+#	フォルダの基本設定
+#
+#@folder_configs[:LIST_NAME]		= 'Works'					# 表示名
+#@folder_configs[:LIST_PRIORITY]	= 50						# 表示優先度(最高:0-100:最低)
+#@folder_configs[:BIND_PRIORITY]	= 50						# 振り分け処理優先度(最高:0-100:最低)
+#@folder_configs[:SHORTCUT_HINT]	= 'abc'						# ショートカットキー(希望順)
+#@folder_configs[:SEND_VIEW]		= false						# 送信ビュー(一覧表示の送信者表示が、送信元でなく、送信先になる)
+
+#---------------------------------------------------------------
+#
+#	振り分け設定(フォルダとして所属を要求するなら true を返す)
+#
+def bind?(mail, account)
+
+#	振り分けデバッグ用
+#	debug("bind?: [%s] [%s] [%s]" % [@name, nil | ((it = mail.from.decode_mh) =~ /^田中/), it])
+
+	# 同一のメールを重複して受信したら捨てる
+	unless(@name == account[:TRASH_FOLDER])
+		# 重複するメールなら、ゴミ箱宛のマークを付けて、受け取らない
+		mail.binding = 'dup' if(@sq_messageid[mail.message_id])
+		return(false) if(mail.binding and mail.binding == 'dup')
+	else
+		# ゴミ箱ならば、ゴミ箱中のメールに重複するメール、および、ゴミ箱宛のマークの付いたメールを受け取る
+		return(true) if(@sq_messageid[mail.message_id])
+		return(true) if(mail.binding and mail.binding == 'dup')
+	end
+
+	# ディレクトリ新規作成の際に path 名等に置換される ※未実装
+#	self_dir = '--mave_folder_path--'
+
+	# インポートの際の振り分け用 ※未実装
+#	return true if(mail.header['X-mave-import-from'] =~ %r!/--mave_folder_base--/!)
+
+	# 件名に特定の文字列が含まれれば、取得
+#	return true if(mail.subject.decode_mh =~ /\[ruby:\d+\]/)	# Ruby ML http://www.ruby-lang.org/ja/community/mailing-lists/
+
+	# 既存のメールに関連のあるメールなら、取得
+	mail.each_in_reply_to {|id|
+		return(true) if(@sq_messageid[id])
+	}
+	mail.each_reference {|id|
+		return(true) if(@sq_messageid[id])
+	}
+
+	# 該当せず
+#	false
+
+	@name == account[:INBOX_FOLDER]								# フォルダ名が Inbox なら無条件に要求する
+end
+
+#---------------------------------------------------------------
+#
+#	全文検索設定
+#
+#		※全フォルダ共通の設定は mave.folderconfig.common に記載
+#
+#def fulltext_search(query)
+#	false
+#end
+
+#---------------------------------------------------------------
+#
+#	Wiki 編集対応
+#
+if(hiki = false)
+
+	@wiki_configs = {}
+
+	@wiki_configs[:TYPE]				= 'Hiki'
+
+#	@wiki_configs[:URI]					= 'http://www.example.com/~t-yamada/hiki/'
+	@wiki_configs[:URI]					= 'https://www.example.com/~t-yamada/hiki/'
+#	@wiki_configs[:CHARSET]				= 'EUC-JP'
+	@wiki_configs[:CHARSET]				= 'UTF-8'
+#	@wiki_configs[:SSL_VERIFY]			= OpenSSL::SSL::VERIFY_NONE
+	@wiki_configs[:SSL_VERIFY]			= OpenSSL::SSL::VERIFY_PEER
+	@wiki_configs[:SSL_CERTS]			= '/etc/pki/tls/certs/ca-bundle.crt'
+
+	@wiki_configs[:PROXY_ADDR]			= nil
+	@wiki_configs[:PROXY_PORT]			= nil
+	@wiki_configs[:PROXY_USER]			= nil
+	@wiki_configs[:PROXY_PASS]			= nil
+
+	@wiki_configs[:SITE_USER]			= 't-yamada'
+	@wiki_configs[:SITE_PASS]			= 'password'
+
+	@wiki_configs[:URI_HASH]			= Digest::MD5.hexdigest(@wiki_configs[:URI])[0, 8]
+
+	@wiki_configs[:COOKIE_PARAMS] = {
+		'session_id'		=> true,
+	}
+	@wiki_configs[:CGI_PARAMS] = {
+		'p'					=> true,
+		'c'					=> true,
+		'md5hex'			=> true,
+		'session_id'		=> true,
+		'save'				=> true,
+		'update_timestamp'	=> true,
+		'contents'			=> true,
+		'keyword'			=> true,
+	}
+
+#---------------------------------------------------------------
+#
+#	Blog 編集対応
+#
+elsif(tdiary = false)
+
+	@wiki_configs = {}
+
+	@wiki_configs[:TYPE]				= 'tDiary'
+
+#	@wiki_configs[:URI]					= 'http://www.example.com/~t-yamada/diary/'
+	@wiki_configs[:URI]					= 'https://www.example.com/~t-yamada/diary/'
+#	@wiki_configs[:CHARSET]				= 'EUC-JP'
+	@wiki_configs[:CHARSET]				= 'UTF-8'
+#	@wiki_configs[:SSL_VERIFY]			= OpenSSL::SSL::VERIFY_NONE
+	@wiki_configs[:SSL_VERIFY]			= OpenSSL::SSL::VERIFY_PEER
+	@wiki_configs[:SSL_CERTS]			= '/etc/pki/tls/certs/ca-bundle.crt'
+
+	@wiki_configs[:PROXY_ADDR]			= nil
+	@wiki_configs[:PROXY_PORT]			= nil
+	@wiki_configs[:PROXY_USER]			= nil
+	@wiki_configs[:PROXY_PASS]			= nil
+
+	@wiki_configs[:SITE_USER]			= 't-yamada'
+	@wiki_configs[:SITE_PASS]			= 'password'
+
+	@wiki_configs[:URI_HASH]			= Digest::MD5.hexdigest(@wiki_configs[:URI])[0, 8]
+
+	@wiki_configs[:CGI_PARAMS] = {
+		'old'				=> true,
+		'year'				=> true,
+		'month'				=> true,
+		'day'				=> true,
+		'edit'				=> true,
+		'title'				=> true,
+		'replace'			=> true,
+	}
+end
+
+if(@wiki_configs)
+	require 'uri'
+	require 'net/https'
+	require 'nokogiri'
+	require 'cgi'
+end
+
+__END__
+

@@ -1,0 +1,24 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTguIBskQkE0Sjg4ITp3GyhC?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.539988.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  別途、全文検索エンジンを導入することで、フォルダ単位で、メールの内容の全文検索を行うことができます。
+  基本的に、全文検索機能は、シェルコマンドの実行、結果の取り込み、タグジャンプの組み合わせにより実装されています。
+  記述例として、Hyper Estraier, Namazu に対するインタフェイスが用意されています。
+  インタフェイスの記述例については、mave.folderconfig.common 内の、fulltext_search メソッドをご覧下さい。
+
+  全文検索を行いたいフォルダに移動し、メール一覧ビュー、または、メール本文ビューで、ESC、s を押すと、全文検索ダイアログが開きます。
+  検索したい語句を入力し、Enter キーを押すと、検索結果は、所定のフォルダに、メールの形で格納されます。
+  検索結果上で、タグジャンプ機能を利用することで、実際のメールに飛ぶことができます。

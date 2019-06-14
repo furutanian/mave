@@ -1,0 +1,33 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?OC4gQ3JlYXRlL0VkaXQgbWFpbCBtZXNzYWdl?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.472282.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Press Ctrl + x, n key to create new mail message.
+  Press Ctrl + x, r key to create reply mail message.
+  The message will store to 'Drafts' folder.
+
+  Press Ctrl + x, e key to edit mail message.
+  The message will overwrite.
+
+  At the headers of destination (To:, Cc:, Bcc:), you can specify the receiver by entries on address book.
+  The word enclosed with two hyphens is recognized as ID that defined in the address book, and converted as follows.
+
+  Example of definition)
+    entries << { :MAIL => 'david-x@google.com',                     :ID => 'david',                                 }
+    entries << { :MAIL => 'john-y@yahoo.co.jp',                     :ID => 'john@private',  :SEND => 'johnny',      }
+
+  At Edit)                     At Send)
+    To: --david--,          =>   To: david <david-x@google.com>, johnny <john-y@yahoo.co.jp>
+        --john@private--

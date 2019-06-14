@@ -1,0 +1,21 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MjIuIBskQiUmJSclViVhITwlayVTJWUhPCUiIVYbKEJNYXZlcmljaxskQiFXGyhC?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.545228.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+  
+  「Maverick」は、ウェブ経由でメールを閲覧することができる cgi スクリプトです。
+  メールデータ、および、全文検索インデックスは完全に mave と共用です。
+  別途、Apache と eRuby を導入し、mave のディレクトリを public_html の下に移動、
+  dot.htaccess を参考にアクセス権限を適切に設定して下さい。
+  添付の mave_fetch を crontab 等により周期的に実行することで、Gmail っぽく使えます。

@@ -1,0 +1,47 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?Mi4gGyRCJWYhPCU2QF9EahsoQg==?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.496906.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  $ cp mave.config.sample mave.config
+  $ vi mave.config
+
+    'Main' アカウントの部分を、あなたの設定に書き換えてください。
+    とりあえず Mave を試してみたい場合、以降を飛ばして 3. に進んでも結構です。
+
+    好みのエディタ環境を設定してください。
+
+    @configs[:EDITOR_TYPE] = ['system'|'forkexec']
+        system: Mave は curses ウィンドウを閉じ、同じコンソール上にエディタを起動します。CUI 向き。
+      forkexec: Mave は子プロセスを fork し、別ウィンドウでエディタを起動します。GUI 向き。
+
+    @configs[:EDITOR] = '/usr/bin/editor %s'
+      エディタを起動するコマンド定義です。%s はファイル名に置換されます。
+
+    好みのビューア環境を設定してください。
+
+    @configs[:VIEWER_TYPE] = ['system'|'forkexec']
+    @configs[:VIEWER] = '/usr/bin/viewer %s'
+      設定はエディタと同様です。
+
+    ファイルマネージャの環境を設定してください。
+
+    @configs[:FILE_MANAGER_TYPE] = ['system'|'forkexec']
+    @configs[:FILE_MANAGER] = '/usr/bin/nautilus %s >/dev/null 2>&1'
+      添付ファイルの保存先など、ファイル操作のためディレクトリを開く際に利用されます。
+
+    ファイル識別コマンドを設定してください。
+
+    @configs[:FILE_IDENTIFIER] = '/usr/bin/file -b -i %s 2>/dev/null'
+      添付ファイルを付加する場合など、ファイルタイプの識別の際に利用されます。

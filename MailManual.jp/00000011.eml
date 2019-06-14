@@ -1,0 +1,40 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?OS4gGyRCJVUlKSVrJUA1IUc9GyhC?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.506219.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  メール一覧ビューで、左(h)を押すと、フォルダ一覧ビューに移行します。
+  フォルダ一覧ビューでは、上下(k, j)で選択、右(l)でフォルダ内に移動できます。
+  また、ショートカットキーを押すことでも、フォルダ内に移動できます。
+
+  フォルダ一覧の表示の意味は以下になります。
+
+  x 0) 受信箱 (5/52)
+  . a) コミュニティ (2/38)
+  x b) 開発 (1/8)
+  . d) 草稿 (0/23)
+  . o) 送信箱 (0/0)
+  . s) 送信済み (0/25)
+  . t) ゴミ箱 (0/18)
+  ^ ^  ^^^^^^  ^^^^
+  | |    |     未読数 / メール総数
+  | |    +-フォルダ名
+  | +-ショートカットキー
+  +-新着メールあり(x)
+
+  r キーで、新着メールマークをオン、オフできます。
+  フォルダ一覧ビューで、Ctrl + x、n と、キーを押すと、新規にフォルダが作成できます。
+  フォルダを選択した状態で、Ctrl + x、e と、キーを押すと、フォルダの設定を編集できます。
+  フォルダの設定の編集により、表示名、表示順、メールの振り分けなどが変更できます。
+  設定の例については「mave.folderconfig.master」を見てください。

@@ -1,0 +1,26 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?Ny4gSW5jcmVtZW50YWwgc2VhcmNo?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.470990.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Press Ctrl + s key to open incremental search dialog at summary or preview view.
+  The search will running that each key was pressed.
+  Press Ctrl + s key to search next when word found.
+  Press Ctrl + g key to abort search or close search dialog.
+  Press Ctrl + r key to search backward.
+
+  You can incremental search with romanized japanese key stroke at summary view,
+  by installing the kanji kana simple inverter KAKASI and its ruby bindings.
+  This function is build by convert to romanized japanese and its caching.
+  Press ESC, Shift + q key to see the cache data.

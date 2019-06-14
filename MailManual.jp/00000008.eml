@@ -1,0 +1,33 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?Ni4gGyRCJWEhPCVrJHIxXE13JDkkaxsoQg==?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.501926.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Vi エディタのように、それぞれ、h, j, k, l キーが、左、下、上、右に割り当てられています。
+
+  メール一覧の表示の意味は以下になります。
+
+  x.  22 Amazon.co.jp <sh 11/22 日 15:40  579 .. +Amazon.co.jp ご注文の確認
+  ^^ ^^^ ^^^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^ ^^^^ ^^ ^ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ||  |   送信元 / 送信先  送信日      サイズ || |  件名
+  ||  +-最新 0 <=> 999 古い                   || +-親(+) / 子(-) / 折り畳み中(#/=)
+  |+-フラグ(F) / 注意(#)                      |+-マルチパートメール(@)(添付あり)
+  +-未読(x)                                   +-To あなた(w) / Cc あなた(v)
+
+  以下の表示状態の操作ができます。
+
+  r キー: 未読表示の切り替え          f キー: フラグのオン、オフ
+  o キー: スレッドを折り畳む、開く    n キー: 注意の印のオン、オフ
+
+  Ctrl + x、v と、キーを押すと、メールビューアが開きます。

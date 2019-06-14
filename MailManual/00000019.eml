@@ -1,0 +1,36 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTcuIENsaXAocXVvdGUpIGFuZCBUYWdqdW1w?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.483484.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Clip(quote) function is a function that quotes a part of mail, and pastes it on another mail.
+  The quotes has a message-id(tag) in mail. It is possible to jump(tagjump) to original mail.
+  If these functions are used, the schedule management can be done on mailer, and the full-text search capability described later be achieved.
+
+  In preview view, the "]" mark where the several lines from top in the left is a cursor. It can used for the clip from mail.
+  Target cursor to the line that wants to begin quoting, and press Ctrl + c to clip line to clip file.
+  The cursor moves to the next line after quoting, you can press more Ctrl + c to clip multi lines continuously.
+
+  In default, the clip file will create with mave.clip file under _pop under the mail directory.
+  You can paste this file, by using the file insertion function on the ediror.
+
+  The quote lines are the following forms.
+
+      * [MEETING] Mailer Mave 2.97 last review
+        <1268959354.007885.8ed5d181@mave.zakato.itline.jp> line:18
+      - Thursday, April 1, at 1:15 p.m to 3:00 p.m
+      - Meeting room 503
+
+  Target cursor to message-id tag on second line of quotes, and press Crtl + ] to jump to original mail.
+  The position that before the tag jump is store to the tagstack, you can return immediately former positon by press Ctrl + t.

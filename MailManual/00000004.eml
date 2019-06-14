@@ -1,0 +1,47 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?Mi4gQnVpbGQgeW91ciBjb25maWc=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.458405.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  $ cp mave.config.sample mave.config
+  $ vi mave.config
+
+    rewrite setting of 'Main' account to yours.
+    You can jump to paragraph 3, if you try mave immediately.
+
+    configure your editor environment.
+
+    @configs[:EDITOR_TYPE] = ['system'|'forkexec']
+        system: Mave close curses window and wake editor with same console. For CUI.
+      forkexec: Mave fork child process and wake editor another window. For GUI.
+
+    @configs[:EDITOR] = '/usr/bin/editor %s'
+      The command of wake editor. %s is replaced to file name.
+
+    configure your viewer environment.
+
+    @configs[:VIEWER_TYPE] = ['system'|'forkexec']
+    @configs[:VIEWER] = '/usr/bin/viewer %s'
+      These settings are similar to editor's.
+
+    configure your file management environment.
+
+    @configs[:FILE_MANAGER_TYPE] = ['system'|'forkexec']
+    @configs[:FILE_MANAGER] = '/usr/bin/nautilus %s >/dev/null 2>&1'
+      These settings are used for open directory by file manager for manipulate files.
+
+    configure file identification command.
+
+    @configs[:FILE_IDENTIFIER] = '/usr/bin/file -b -i %s 2>/dev/null'
+      These settings are used for identify file types when attach file to mail and etc.

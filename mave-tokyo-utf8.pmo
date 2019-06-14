@@ -1,0 +1,268 @@
+# coding: utf-8
+
+class Intl
+
+	@@catalog = {}
+
+	@@catalog['hello'] \
+			= 'こんにちは'
+	@@catalog['bye'] \
+			= 'さようなら'
+	@@catalog['%1$s is better than %2$s.'] \
+			= '%2$s よりも %1$s のがよい。'
+	@@catalog['peyoung'] \
+			= 'ペヤング'
+
+	@@catalog['status'] \
+			= 'ステータス'
+	@@catalog['substatus'] \
+			= 'サブステータス'
+	@@catalog['debug'] \
+			= 'デバッグ'
+	@@catalog['summary'] \
+			= 'メール一覧'
+	@@catalog['preview'] \
+			= 'プレビュー'
+	@@catalog['inc_search'] \
+			= 'インクリメンタル検索'
+	@@catalog['folderlist'] \
+			= 'フォルダ一覧'
+	@@catalog['create_folder'] \
+			= 'フォルダを新規作成'
+	@@catalog['ftext_search'] \
+			= '全文検索'
+	@@catalog['ftext_search all'] \
+			= '全文検索(全フォルダ)'
+
+	@@catalog["Account '%1$s' executing import command [%2$s]..."] \
+			= 'インポートコマンド %2$s を、アカウント %1$s で実行しています……'
+	@@catalog['Import checking (%d) [%s]...'] \
+			= 'インポート対象メールを確認中 (%d) [%s]……'
+	@@catalog['%d mails are checked for import.'] \
+			= '%d 通のインポート対象メールを確認しました。'
+	@@catalog['Imported (%1$d/%2$d) from [%3$s] [%4$s]'] \
+			= 'インポート中 (%1$d/%2$d) [%3$s] から [%4$s]'
+	@@catalog['Failed to imported mail. file=[%s] reason=[%s]'] \
+			= 'メールのインポートに失敗しました。ファイル=[%s] 理由=[%s]'
+	@@catalog['%1$s mail%2$s imported.'] \
+			= '%1$s 通のメールをインポートしました。'
+	@@catalog['no mails imported.'] \
+			= '対象メールはありませんでした。'
+
+	@@catalog["Account '%1$s' connecting POP server '%2$s'..."] \
+			= 'POP サーバ %2$s に、アカウント %1$s で接続しています……'
+	@@catalog['Connected.'] \
+			= '接続しました。'
+	@@catalog['Popped (%1$d/%2$d) from [%3$s] [%4$s]'] \
+			= '受信中 (%1$d/%2$d) [%3$s] から [%4$s]'
+	@@catalog['Failed to pop mail. reason=[%s]'] \
+			= 'メールの受信に失敗しました。理由=[%s]'
+	@@catalog['%1$s mail%2$s popped.(%3$s)'] \
+			= '%1$s 通のメールを受信しました(%3$s)。'
+	@@catalog['no mails popped.(%3$s)'] \
+			= 'メールはありませんでした(%3$s)。'
+
+	@@catalog["Account '%1$s' connecting SMTP server '%2$s'..."] \
+			= 'SMTP サーバ %2$s に、アカウント %1$s で接続しています……'
+	@@catalog['Sent (%1$d/%2$d) [%3$s] to [%4$s] [%5$s]'] \
+			= '送信中 (%1$d/%2$d) [%3$s] [%4$s] へ [%5$s]'
+	@@catalog['Failed to send mail. reason=[%s]'] \
+			= 'メールの送信に失敗しました。理由=[%s]'
+	@@catalog['%1$s mail%2$s sent.(%3$s)'] \
+			= '%1$s 通のメールを送信しました(%3$s)。'
+	@@catalog['no mails sent.(%3$s)'] \
+			= '送るメールはありませんでした(%3$s)。'
+
+	@@catalog['Mail Identification'] \
+			= 'メール情報'
+	@@catalog['  Message-Sq: %s'] \
+			= '  メッセージ連番: %s'
+	@@catalog['  Message-ID: %s'] \
+			= '   メッセージ ID: %s'
+	@@catalog['    FilePath: %s'] \
+			= '    ファイルパス: %s'
+	@@catalog['    FileSize: %d'] \
+			= '  ファイルサイズ: %s'
+	@@catalog['Related Path: %s'] \
+			= '関連ディレクトリ: %s'
+	@@catalog['Related File: %d) %s'] \
+			= '    関連ファイル: %d) %s'
+	@@catalog['  Subject-ID: %s %s'] \
+			= '         件名 ID: %s %s'
+	@@catalog['Mail not selected.'] \
+			= 'メールが選択されていません。'
+
+	@@catalog['   From: '] \
+			= '差出人: '
+	@@catalog['     To: '] \
+			= '  宛先: '
+	@@catalog['     Cc: '] \
+			= '    Cc: '
+	@@catalog['   Date: '] \
+			= '  日付: '
+	@@catalog['Subject: '] \
+			= '  件名: '
+	@@catalog['no mail'] \
+			= 'メールがありません'
+
+	@@catalog['Original Message'] \
+			= '返信元メール'
+	@@catalog['      From: '] \
+			= '       差出人: '
+	@@catalog['        To: '] \
+			= '         宛先: '
+	@@catalog['        Cc: '] \
+			= '           Cc: '
+	@@catalog['   Subject: '] \
+			= '         件名: '
+	@@catalog['      Sent: '] \
+			= '     送信日時: '
+	@@catalog['Message-ID: '] \
+			= 'メッセージ ID: '
+
+	@@catalog['Folder name: '] \
+			= 'フォルダ名: '
+
+	@@catalog['Change current account to [%s].'] \
+			= '既定のアカウントを [%s] に変更しました。'
+	@@catalog['Create new message.'] \
+			= '新規にメールを編集します。'
+	@@catalog['Create reply message.'] \
+			= '返信のメールを編集します'
+	@@catalog['Create reply to all message.'] \
+			= '全員へ返信のメールを編集します'
+	@@catalog['Resend reply message.'] \
+			= '再送のメールを編集します'
+	@@catalog['Edit message.'] \
+			= '既存のメールを編集します。'
+	@@catalog['View message.'] \
+			= 'メールを閲覧します。'
+	@@catalog['View raw message.'] \
+			= '素のメールを閲覧します。'
+	@@catalog['Failed to editing mail. reason=[%s]'] \
+			= 'メールの編集に失敗しました。理由=[%s]'
+	@@catalog['The message was stored in the [%s] folder.'] \
+			= '編集したメールを [%s] フォルダに保存しました。'
+	@@catalog['The message was overwrited.'] \
+			= '既存のメールを上書きしました。'
+	@@catalog['The message was stored as another one (edit collision was detected).'] \
+			= '別のメールとして保存しました(編集の衝突が検出されました)。'
+	@@catalog['The message was discarded.'] \
+			= '未編集のメールを破棄しました。'
+
+	@@catalog['Create new folder.'] \
+			= '新規にフォルダを作成します。'
+	@@catalog['Folder [%s] created.'] \
+			= 'フォルダ [%s] を作成しました。'
+	@@catalog['Edit folder configs.'] \
+			= 'フォルダの設定を編集します。'
+	@@catalog['Failed to editing folder configs. reason=[%s]'] \
+			= 'フォルダの設定の編集に失敗しました。理由=[%s]'
+	@@catalog['Folder configs were overwrited.'] \
+			= '既存のフォルダの設定を上書きしました'
+	@@catalog['Folder configs were discarded (edit collision was detected).'] \
+			= 'フォルダの設定を破棄しました(編集の衝突が検出されました)。'
+	@@catalog['Folder configs were discarded.'] \
+			= '未編集のフォルダの設定を破棄しました。'
+	@@catalog['The file was discarded (unexpected type).'] \
+			= 'ファイルを破棄しました(未知のファイル)。'
+	@@catalog['Failed to start file manager. reason=[%s]'] \
+			= 'ファイルマネージャの起動に失敗しました。理由=[%s]'
+
+	@@catalog['Copy to'] \
+			= 'コピー先'
+	@@catalog['Move to'] \
+			= '移動先'
+	@@catalog['Mark mail(s) to be joined.'] \
+			= '結びつけたいメールをマークしてください。'
+
+	@@catalog[' backward'] \
+			= '逆方向の'
+	@@catalog['%1$sI-search%2$s: %3$s'] \
+			= '%2$sインクリメンタル検索%1$s: %3$s'
+	@@catalog['Searching...%s: '] \
+			= '検索中……%s: '
+	@@catalog['Aborting '] \
+			= 'を中止'
+	@@catalog['Failing '] \
+			= 'に失敗'
+	@@catalog['[No previous search string]'] \
+			= '[検索文字列が未設定です]'
+
+	@@catalog['Create related file. file=[%s]'] \
+			= '関連ファイルを新規作成しました。ファイル=[%s]'
+	@@catalog['Skipped to create related file. file=[%s] reason=[File exist]'] \
+			= '関連ファイルの新規作成をスキップしました。ファイル=[%s] 理由=[ファイルが存在します]'
+	@@catalog['Export mail. file=[%s]'] \
+			= 'メールをエクスポートしました。ファイル=[%s]'
+	@@catalog['Failed to export mail. file=[%s] reason=[%s]'] \
+			= 'メールのエクスポートに失敗しました。ファイル=[%s] 理由=[%s]'
+	@@catalog['Extracted attached file. file=[%s]'] \
+			= '添付ファイルを展開しました。ファイル=[%s]'
+	@@catalog['Skipped to extract attached file. file=[%s] reason=[File exist]'] \
+			= '添付ファイルの展開をスキップしました。ファイル=[%s] 理由=[ファイルが存在します]'
+
+	@@catalog['X-Mave-Extract-Targets header is not collect. header=[%s]'] \
+			= 'X-Mave-Extract-Targets ヘッダの記載が正しくありません。ヘッダ=[%s]'
+	@@catalog['Target folder is not found. folder=[%s]'] \
+			= '指定のフォルダが存在しません。フォルダ=[%s]'
+	@@catalog['Target message_id is not found. message_id=[%s]'] \
+			= '指定のメッセージ ID を持つメールが見つかりません。メッセージ ID=[%s]'
+	@@catalog['Target part is not found. seq=[%s]'] \
+			= '指定番目のメールパートが見つかりません。番目=[%s]'
+	@@catalog['Failed to extract attachment. file=[%s] reason=[%s]'] \
+			= '添付ファイルの展開に失敗しました。ファイル=[%s] 理由=[%s]'
+	@@catalog['Sending aborted. The \'attach\' keyword found. [%s]'] \
+			= '添付を思わせる語句が見つかったので、送信を中止しました。[%s]'
+
+	@@catalog['Shell command was executed. Result was stored in the [%s] folder.'] \
+			= 'シェルコマンドを実行しました。結果は [%s] フォルダに格納しました。'
+	@@catalog['Shell command was executed. Result was dropped.'] \
+			= 'シェルコマンドを実行しました。結果は破棄しました。'
+
+	@@catalog['Target tag was not found.'] \
+			= '目的のタグは見つかりません。'
+	@@catalog['Target file was not found.'] \
+			= '目的のファイルは見つかりません。'
+	@@catalog['Target mail format was not correct.'] \
+			= '目的のメールのフォーマットが正しくありません。'
+	@@catalog['Tag was not found.'] \
+			= 'タグが見つかりませんでした。'
+	@@catalog['Tagstack was empty.'] \
+			= 'タグスタックが空です。'
+
+	@@catalog['Full-text search was executed. Result was stored in the [%s] folder.'] \
+			= '全文検索を実行しました。結果は [%s] フォルダに格納しました。'
+	@@catalog['Full-text search was executed. Result was dropped.'] \
+			= '全文検索を実行しました。結果は破棄しました。'
+	@@catalog['The folder has no full-text search method.'] \
+			= '該当のフォルダに全文検索メソッドは定義されていません。'
+	@@catalog['The full-text search method has disabled.'] \
+			= '全文検索メソッドは無効にされています。'
+
+	@@catalog['Fulltext-search: '] \
+			= '全文検索: '
+
+	@@catalog['Aborted.'] \
+			= '中断しました。'
+
+	@@catalog['Function not provided yet.'] \
+			= '該当機能は未だ実装されていません。'
+
+	@@catalog['Prepare the root directory [%2$s]. reason=[%1$s]'] \
+			= 'データディレクトリ [%2$s] を作成して下さい。理由=[%1$s]'
+	@@catalog['Another instance is already running. reason=[%1$s]'] \
+			= '既に別の mave が起動しています。理由=[%1$s]'
+	@@catalog['Prepare one or more enable accounts [mave.config].'] \
+			= '最低ひとつの有効メールアカウントを [mave.config] に登録して下さい。'
+	@@catalog['%1$d editor%2$s alive.'] \
+			= 'エディタが %1$d つ起動中です。'
+	@@catalog['Unexpected error occurred. reason=[%1$s]'] \
+			= '想定外のエラーが発生しました。理由=[%1$s]'
+
+	@@catalog['Mave was full stopped.'] \
+			= '全系統稼働停止。'
+end
+
+__END__
+

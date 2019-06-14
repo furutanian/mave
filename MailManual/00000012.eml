@@ -1,0 +1,24 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTAuIE1vdmUsIENvcHkgYW5kIERlbGV0ZSBtYWlscy4=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.475605.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  In summary view, press Ctrl + x, m key to move mail to another folder.
+  The folder view opens, and select the destination folder.
+
+  Press Ctrl + x, c key to copy mail to another folder.
+
+  Press Ctrl + x, d key to delete mail.
+  The mail deleted from except 'Trash' folder, it moves to the 'Trash' folder.
+  The mail deleted from 'Trash' folder, it deleted completely.

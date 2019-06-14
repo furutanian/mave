@@ -1,0 +1,22 @@
+From: Developer <furutanian@gmail.com>
+To: Mave user <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTQuIEFycmFuZ2UgbWFpbCB0aHJlYWRz?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.479724.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.446131.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  In summary view, Press Ctrl + x, Shift + j key to take off mail from thread.
+
+  Press ESC, j key to tie mail to original thread.
+
+  Press Ctrl + x, j key to tie mail to mail thread that you want to.
+  The mail that marked will tie to the mail that indicated with cursor, when press Ctrl + x, j key.

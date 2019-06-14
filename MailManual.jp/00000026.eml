@@ -1,0 +1,33 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?GyRCJWElYhsoQjo=?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.547439.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+  ひらがなや漢字などが化けてしまうのは、
+  Ruby の標準 curses ライブラリが UTF-8 に対応していないのが原因です。
+  以下のサイトの記載を参考に、パッチを当てて、ncursesw ライブラリに対応してください。
+
+  http://www.itline.jp/~svx/diary/?date=20091022
+
+  現在、試験的に EUC-JP の端末環境へも対応可能です。
+  この場合、上記のパッチを当てる必要はありません。
+  mave.config の「:TERMINAL_CHARSET」に EUC-JP をセットし、mave_base.rb を一部変更してください。
+  端末から「export LANG=ja_JP.eucjp」を実行する必要もあるかもしれません。
+
+  117     def enspc
+  118 #       return(self)                                            # UTF-8 以外ならコメントを生かす
+  119 ^       self.gsub(/[\xC0-\xE2][\x80-\xBF]+/) {|c|               #### for UTF8 いーかげん
+      +-この「#」を消す
+
+  また、試験的に SHIFT_JIS での Windows コンソール環境への対応も進めています。
+  mave.config の「:TERMINAL_CHARSET」に SHIFT_JIS をセットするなどをお試し下さい。

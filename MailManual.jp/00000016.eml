@@ -1,0 +1,22 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?MTQuIBskQiU5JWwlQyVJQWA6bhsoQg==?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.532742.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  メール一覧ビューで、Ctrl + x、Shift + j と、キーを押すと、メールをスレッドから取り外せます。
+
+  ESC、j と、キーを押すと、メールを元のスレッドにつなぎ直します。
+
+  Ctrl + x、j と、キーを押すと、メールを任意のスレッドにつなげられます。
+  つなぎたいメールをマークし、次に、つなぎ先のメールにカーソルを合わせて、Ctrl + x、j と、キーを押してください。

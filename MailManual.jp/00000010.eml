@@ -1,0 +1,33 @@
+From: =?ISO-2022-JP?B?GyRCMytILzxUGyhC?= <furutanian@gmail.com>
+To: =?ISO-2022-JP?B?GyRCJWElJCV0JWYhPCU2GyhC?= <mave_user@example.com>
+Subject: =?ISO-2022-JP?B?OC4gGyRCJWEhPCVrJHI6bkAuGyhCLxskQkpUPTgkOSRrGyhC?=
+Date: Mon, 20 Aug 2012 21:04:18 +0900
+X-Mailer: Mave version 2.98 (gradius.itline.jp 3.3.0-4.fc16.x86_64 GNU/Linux)
+Message-ID: <1345464258.504739.8eaa550b@mave.gradius.itline.jp>
+In-Reply-To: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+References: <1345464258.493885.8eaa550b@mave.gradius.itline.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+X-Mave-Extract-Targets: 
+X-Mave-Attachments: 
+X-Mave-Relations: 
+
+
+  Ctrl + x、n と、キーを押すと、新規メールを作成します。
+  Ctrl + x、r と、キーを押すと、返信メールを作成します。
+  メールは「草稿」フォルダに格納されます。
+
+  Ctrl + x、e と、キーを押すと、既存のメールを編集します。
+  メールは上書きされます。
+
+  送信先(To:, Cc:, Bcc:)の欄では、アドレス帳の機能を用いた宛先指定ができます。
+  2 つのハイフンで囲った文字列は、アドレス帳で定義した ID と見なされ、以下のように変換されます。
+
+  定義の例)
+    entries << { :MAIL => 'x-tanaka@google.com',                    :ID => '田中',                                  }
+    entries << { :MAIL => 'y-kato@yahoo.co.jp',                     :ID => '加藤@private',  :SEND => 'かとちゃん',  }
+
+  編集時)                      送信時)
+    To: --田中--,           =>   To: 田中 様 <x-tanaka@google.com>, かとちゃん <y-kato@yahoo.co.jp>
+        --加藤@private--
