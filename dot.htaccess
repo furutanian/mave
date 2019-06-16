@@ -1,4 +1,5 @@
 AddHandler		cgi-script .cgi
+AddHandler		default-handler .html .htm .gif .png .jpg .css
 AddHandler		rhtml-script .rhtml
 Action			rhtml-script /~t-yamada/maverick/eruby.cgi
 DirectoryIndex	maverick.rhtml

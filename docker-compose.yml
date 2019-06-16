@@ -2,7 +2,7 @@ version: '3'
 services:
     maverick:
         image:
-            maverick
+            docker.io/furutanian/maverick
         container_name:
             maverick_alpha
         build:
