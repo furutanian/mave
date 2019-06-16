@@ -1,5 +1,4 @@
 FROM fedora
-#FROM fedora:28
 
 LABEL 'maintainer=Furutanian <furutanian@gmail.com>'
 
@@ -13,13 +12,20 @@ RUN set -x \
 		sudo \
 		qdbm \
 		ruby-qdbm \
+		rubygems \
+		ruby-devel \
+		gcc \
+		redhat-rpm-config \
+		ncurses-devel \
+		make \
 		hyperestraier \
 		findutils \
 		git \
 		procps-ng \
 		net-tools \
 	&& rm -rf /var/cache/dnf/* \
-	&& dnf clean all
+	&& dnf clean all \
+	&& gem install curses
 
 # git clone mave しておくこと
 COPY mave /var/www/cgi-bin
@@ -70,7 +76,7 @@ cat Dockerfile | sed -n \'/^##__BEGIN1/,/^##__END1/p\' | sed \'s/^#//\' > pop.sh
 #	do
 #		date
 #		sudo -u apache ./mave_fetch
-#		sleep 60
+#		sleep 600
 #	done
 #
 ##__END1__pop.sh__
