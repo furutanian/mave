@@ -13,6 +13,8 @@ services:
 #               https_proxy: http://user_abc:password@proxy.example.com:8080/
         ports:
             - 8081:80
+        restart:
+            always
         privileged:
             true
         environment:
