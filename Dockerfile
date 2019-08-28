@@ -90,11 +90,11 @@ cat Dockerfile | sed -n \'/^##__BEGIN1/,/^##__END1/p\' | sed \'s/^#\s*//\' > cro
 
 ##__BEGIN1__crontab.index__
 #
-#     MAILTO=""
+#	MAILTO=""
 #
-#     */10 * * * * cd /var/www/html; sudo -u apache ./mave_fetch
-#     15 * * * * cd /var/lib/pv/mave/mave.mails/Inbox; find . -type f -name "*.eml" | sudo -u apache /usr/local/bin/estcmd gather -cl -fm -cm casket -
-#     20 2 * * * cd /var/lib/pv/mave/mave.mails/Inbox; sudo -u apache /usr/local/bin/estcmd purge -cl casket
+#	*/10 * * * * cd /var/www/html; sudo -u apache ./mave_fetch
+#	15 * * * * cd /var/lib/pv/mave/mave.mails/Inbox; find . -type f -name "*.eml" | sudo -u apache /usr/local/bin/estcmd gather -cl -fm -cm casket -
+#	20 2 * * * cd /var/lib/pv/mave/mave.mails/Inbox; sudo -u apache /usr/local/bin/estcmd purge -cl casket
 #
 ##__END1__crontab.index__
 
