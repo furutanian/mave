@@ -33,7 +33,8 @@ RUN cat /var/www/html/dot.htaccess \
 		| sed 's/\(Action.*rhtml-script\)\(.*maverick\)/\1 \//' \
 		> /var/www/html/.htaccess
 
-RUN mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.org \
+RUN set -x \
+	&& mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.org \
 	&& cat /etc/httpd/conf/httpd.conf.org \
 		| sed '/^<Directory "\/var\/www\/html">/,/^</s/^\(\s*Options\).*/\1 All/' \
 		| sed '/^<Directory "\/var\/www\/html">/,/^</s/^\(\s*AllowOverride\).*/\1 All/' \
@@ -47,14 +48,16 @@ EXPOSE 80
 # Dockerfile 中の設定スクリプトを抽出するスクリプトを出力、実行
 COPY Dockerfile .
 RUN echo $'\
-cat Dockerfile | sed -n \'/^##__BEGIN0/,/^##__END0/p\' | sed \'s/^#//\' > startup.sh\n\
-cat Dockerfile | sed -n \'/^##__BEGIN1/,/^##__END1/p\' | sed \'s/^#//\' > pop.sh\n\
+cat Dockerfile | sed -n \'/^##__BEGIN0/,/^##__END0/p\' | sed \'s/^#\s*//\' > startup.sh\n\
+cat Dockerfile | sed -n \'/^##__BEGIN1/,/^##__END1/p\' | sed \'s/^#\s*//\' > crontab.index\n\
 ' > extract.sh && bash extract.sh
 
 # docker-compose up の最後に実行される設定スクリプト
 ##__BEGIN0__startup.sh__
 #
-#	ln -fs ../usr/share/zoneinfo/$TZ /etc/localtime
+#	ln -v -fs ../usr/share/zoneinfo/$TZ /etc/localtime
+#	crontab crontab.index
+#	crontab -l
 #
 #	mkdir -v -p /var/lib/pv/mave/conf
 #	mkdir -v -p /var/lib/pv/mave/mave.mails
@@ -71,26 +74,27 @@ cat Dockerfile | sed -n \'/^##__BEGIN1/,/^##__END1/p\' | sed \'s/^#//\' > pop.sh
 #	mkdir -v -p /var/lib/pv/mave/mave.mails/Inbox
 #	chown -v apache:apache /var/lib/pv/mave/mave.mails/Inbox
 #	cd /var/lib/pv/mave/mave.mails/Inbox
-#	find . -type f -name "*.eml" | sudo -u apache estcmd gather -cl -fm -cm casket -
+#	find . -type f -name "*.eml" | sudo -u apache estcmd gather -cl -fm -cm casket - > /dev/null
 #	estcmd search -vh -max 3 casket 'Linux'
 #
-#	cat /var/www/html/crontab.nomailto >> /var/www/html/crontab
-#	cat /var/www/html/crontab.maverick >> /var/www/html/crontab
-#	crontab /var/www/html/crontab
-#
-##	bash pop.sh &
+#	cd /var/www/html
+#	ln -v -s /var/lib/pv/mave/mave.mails .
+#	cat estseek.conf.org \
+#		| sed 's/^\(indexname:\).*/\1 \/var\/lib\/pv\/mave\/mave.mails\/Inbox\/casket/' \
+#		| sed 's/^\(replace:\).*^file.*/\1 ^file:\/\/\/var\/lib\/pv\/mave\/{{!}}\//' \
+#		> estseek.conf
+#	diff -C 2 estseek.conf.org estseek.conf \
+#	|| echo '/var/www/html/estseek.conf changed.'
 #
 ##__END0__startup.sh__
 
-##__BEGIN1__pop.sh__
+##__BEGIN1__crontab.index__
 #
-#	cd /var/www/html
-#	while true
-#	do
-#		date
-#		sudo -u apache ./mave_fetch
-#		sleep 600
-#	done
+#     MAILTO=""
 #
-##__END1__pop.sh__
+#     */10 * * * * cd /var/www/html; sudo -u apache ./mave_fetch
+#     15 * * * * cd /var/lib/pv/mave/mave.mails/Inbox; find . -type f -name "*.eml" | sudo -u apache /usr/local/bin/estcmd gather -cl -fm -cm casket -
+#     20 2 * * * cd /var/lib/pv/mave/mave.mails/Inbox; sudo -u apache /usr/local/bin/estcmd purge -cl casket
+#
+##__END1__crontab.index__
 

@@ -1,4 +1,0 @@
-*/10 * * * * cd /var/www/html; sudo -u apache ./mave_fetch
-15 * * * * cd /var/lib/pv/mave/mave.mails/Inbox; find . -type f -name "*.eml" | sudo -u apache /usr/local/bin/estcmd gather -cl -fm -cm casket -
-20 2 * * * cd /var/lib/pv/mave/mave.mails/Inbox; sudo -u apache /usr/local/bin/estcmd purge -cl casket
-
